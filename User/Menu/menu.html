@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu Kopi</title>
+</head>
+<body>
+  <!-- Header Menu -->
+   <h1 id="storeName">Kevin Coffe</h1>
+    <p2>Pilihan Menu</p2>
+    <!-- Menu -->
+     <div id="main-app">
+        <div class="container">
+            <div class="card">
+                <h3>🛒 Pilihan Menu</h3>
+                
+                <select id="category-filter" onchange="filterMenu()" style="margin-bottom: 20px;">
+                    <option value="" disabled selected>🔍 Silahkan pilih menu</option>
+                    <option value="semua">📑 Semua Menu</option>
+                    <option value="minuman">☕ Minuman</option>
+                    <option value="snack">🍟 Snack / Cemilan</option>
+                    <option value="makanan">🍲 Makanan Berat</option>
+                </select>
+
+                <div class="menu-grid" id="menu-container" style="display: none;">
+                    <div class="menu-card" data-category="minuman" onclick="add('Air Putih', 5000)">
+                        <img src="/static/img/air_putih.jpg" alt="Air Putih">
+                        <div class="menu-info"><b>Air Putih</b><span>5rb</span></div>
+                    </div>
+                    
+                    <div class="menu-card" data-category="minuman" onclick="add('Kopi Aren', 15000)">
+                        <img src="/static/img/kopi_aren.jpg" alt="Kopi Aren">
+                        <div class="menu-info"><b>Kopi Aren</b><span>15rb</span></div>
+                    </div>
+                    
+                    <div class="menu-card" data-category="minuman" onclick="add('Kopi Susu', 12000)">
+                        <img src="/static/img/kopi_susu.jpg" alt="Kopi Susu">
+                        <div class="menu-info"><b>Kopi Susu</b><span>12rb</span></div>
+                    </div>
+                    
+                    <div class="menu-card" data-category="minuman" onclick="add('Matcha Latte', 18000)">
+                        <img src="/static/img/matcha_latte.jpg" alt="Matcha Latte">
+                        <div class="menu-info"><b>Matcha Latte</b><span>18rb</span></div>
+                    </div>
+                    
+                    <div class="menu-card" data-category="minuman" onclick="add('Blue Lagoon', 20000)">
+                        <img src="/static/img/blue_lagon.jpg" alt="Blue Lagoon">
+                        <div class="menu-info"><b>Blue Lagoon</b><span>20rb</span></div>
+                    </div>
+                    
+                    <div class="menu-card" data-category="snack" onclick="add('Kentang Goreng', 15000)">
+                        <img src="/static/img/kentang_goreng.jpg" alt="Kentang Goreng">
+                        <div class="menu-info"><b>Kentang Goreng</b><span>15rb</span></div>
+                    </div>
+                    
+                    <div class="menu-card" data-category="snack" onclick="add('Roti Bakar', 12000)">
+                        <img src="/static/img/roti_bakar.jpg" alt="Roti Bakar">
+                        <div class="menu-info"><b>Roti Bakar</b><span>12rb</span></div>
+                    </div>
+                    
+                    <div class="menu-card" data-category="makanan" onclick="add('Mie Goreng', 10000)">
+                        <img src="/static/img/mie_goreng.jpg" alt="Mie Goreng">
+                        <div class="menu-info"><b>Mie Goreng</b><span>10rb</span></div>
+                    </div>
+                    
+                    <div class="menu-card" data-category="makanan" onclick="add('Nasi Goreng', 25000)">
+                        <img src="/static/img/nasi_goreng.jpg" alt="Nasi Goreng">
+                        <div class="menu-info"><b>Nasi Goreng</b><span>25rb</span></div>
+                    </div>
+                </div>
+    <h4>Keranjang Kamu</h4>
+    <!-- Keranjang -->
+     <table>
+      <tr>
+        <th>Pesanan</th>
+        <th>Jumlah</th>
+      </tr>
+<!-- Jenis pesan -->
+      <tr>
+        <td></td>
+      </tr>
+<!-- Kuantitas -->
+      <tr>
+        <td></td>
+      </tr>
+     </table>
+
+<!-- Asal Pesanan -->
+      <div class="form-group" style="margin-top:15px;">
+                    <select id="asal" onchange="toggleSched(); checkForm()">
+                        <option value="">-- Pilih Opsi Pesanan --</option>
+                        <option value="Walk-in">🚶 Walk-In</option>
+                        <option value="Jadwal">📅 Web (Penjadwalan)</option>
+                        <option value="Ojol">🛵 Ojek Online</option>
+                    </select>
+
+<!-- Konfirmasi Pesanan -->
+ <a href="../Pembayaran/pembayaran.html">
+  <button>
+   Konfirmasi
+  </button>
+</a>
+
+</body>
+</html>

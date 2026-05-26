@@ -1,0 +1,17 @@
+Arsitktur Yang Ingin digunakan
+
+
+Bagian Front end
+Html
+CSS
+Javascript
+
+Bagian Back end
+Python 
+Framework menggunakan Flask
+
+Bagian API dan Database
+
+SQlite
+Flask API
+

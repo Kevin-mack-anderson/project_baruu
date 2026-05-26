@@ -1,0 +1,58 @@
+HAL YANG ADA DI PROGRAM
+(Lingkup HTML, CSS, JS)
+Dari segi User:
+User bisa mmilih makanan
+User bisa mengundo pesanan
+User bisa mengetahui apakah menu tersedia atau tidak
+User bisa menambah atau mengurangi jumlah makanan
+User bisa memilih mau walk-in, gojek, atau schedule
+User bisa membayar pesanan mereka
+User bisa mengetahui nomor antrian, status pesanan, jenis pesanan, tanggal dan waktu, estimasi waktu
+User bisa memilih metode pembayaran (tunai/non tunai) + ada verifikasi pembayaran
+Apabila pakai cash maka dibuatkan sebuah qr yang nanti akan di scan kemudian muncul tagihannya di kasir
+Apabila pakai  dompet digital maka pelanggan bisa bayar langsung
+Terdapat verifikasi pembayaran (apabila belum dibayar maka pesanan tidak dapat diproses) dan terdapat waktu expired
+User bisa keluar dari menu keranjang
+
+Dari segi Admin(POS):
+Admin mempunyai data pesanan masuk (yang aktif) yanng sudah selesai di delelte
+Admin mempunyai kalkulator kembalian cash
+Admin memiliki data mengenai:
+Stok bahan
+Banyaknya transaksi yang dilakukan pada hari ini
+Kalkulasi Minus hari ini  (interface sederhana)
+Menentukan banyaknya stok (interface untuk menambahkan stock di database)
+Tanggal hari ini
+dan jam
+
+(Lingkup Python Flask)
+Dari segi Backend
+ 1. User
+	- Program Memiliki koneksi dengan kedua js
+	- Program dapat menarik data dari database yang kemudian diteruskan ke front
+	- Program dapat menampung data sementara yang ditarik dari database dengan tujuan penggunaan algoritma stack(agar user bisa melakukan 	  	  undo)tentativ
+	- Program dapat menangkap permintaan dari front yang kemudian akan melakukan request kedalam database seperti:
+	  - Pesanannya apa?
+	  - berapa qty nya?
+	  - Besar kemungkinan penarikan ini di inisialisasikan dengan sebuah kode agar mudah
+	- Program dapat memproses hasil pesanan (sebelum verifikasi) dari pelanggan seperti:
+	  - Nomor antrian
+	  - apa saja pesanannya
+	  - Qr pembayaran
+	  - Waktu expired
+	- Program dapat melakukan verifikasi pembayaran baik secara cash maupun qris (terbayar/belum terbayar) dan waktu expirednya
+	- program bisa menampung algoritma:
+	  - stack (untuk undo)
+	  - Queue,Priority Queue khususnya metode SJF
+	- Program mengeeksekusi pesanan dari waktu yang paling cepat (SJF)
+	- Program metode undo (ini sepertinya di web nanti)konsepnya Stack
+2. Admin
+	- Dapat melakukan proses penambahan stok
+	- Program dapat melakukan kalkulasi 
+
+3. Database
+	- Memiliki data tentang lama proses dari setiap  menunya
+	- Memiliki kunci agar dapat ditarik oleh api
+	- Memiliki sebuah data stok makanan (Dibuat agar bisa ditambah dan kurangi)
+	
+	
