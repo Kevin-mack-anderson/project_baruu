@@ -2,16 +2,16 @@ let cart = {};
 
 // filter menu
 function fiterMenu() {
-  const filterValue = document.getElementById('category-filter').value;
-  const menuContainer = document.getElementById('menu-container');
+//   const filterValue = document.getElementById('category-filter').value;
+//   const menuContainer = document.getElementById('menu-container');
   const menuCards = document.querySelectorAll('.menu-card');
 
-// Tampilkan "container menu" when user has done choice option
-if (filterValue !== "") {
-  menuContainer.style.display = "grid"; ///Asumsi saja css nya grid
-} else {
-  menuContainer.style.display = "none";
-}
+// // Tampilkan "container menu" when user has done choice option
+// if (filterValue !== "") {
+//   menuContainer.style.display = "grid"; ///Asumsi saja css nya grid
+// } else {
+//   menuContainer.style.display = "none";
+// }
 
 // filter setiap kartu berdasarkan data category
 menuCards.forEach(card => {

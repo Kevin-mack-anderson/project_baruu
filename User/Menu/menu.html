@@ -9,17 +9,13 @@
 <body>
   <!-- Header Menu -->
    <h1 class="namestr">Kevin Coffe</h1>
-    <p2 class="mnu">Pilihan Menu</p2>
     <!-- Menu -->
      <div id="main-app">
         <div class="container">
             <div class="card">
                 <h3>🛒 Pilihan Menu</h3>
                 
-                <select id="category-filter" onchange="filterMenu()" style="margin-bottom: 20px;">
-                    <option value="" disabled selected>🔍 Silahkan pilih menu</option>
-                    <option value="semua">📑 Semua Menu</option>
-                </select>
+                
 
                 <div class="menu-grid" id="menu-container" ">
                     <div class="menu-card" data-category="minuman" onclick="add('Air Putih', 5000)">
