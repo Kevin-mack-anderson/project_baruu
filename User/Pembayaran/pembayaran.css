@@ -106,3 +106,34 @@ a {
   text-decoration: none;
   display: block;
 }
+
+/* Gaya untuk kotak simulasi QRIS */
+.dummy-qris {
+  width: 150px;
+  height: 150px;
+  background-color: #ece8e4;
+  margin: 0 auto 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 2px dashed #d1c9c2;
+  color: #8a7e74;
+}
+
+/* Tombol konfirmasi sudah bayar khusus QR */
+.btn-hijau {
+  background-color: #2e7d32; /* Hijau kalem */
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.btn-hijau:hover:not(:disabled) {
+  background-color: #1b5e20;
+}

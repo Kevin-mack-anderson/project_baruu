@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pembayaran</title>
   <link rel="stylesheet" href="pembayaran.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
   <!-- Jenis Pesanan -->
@@ -17,6 +18,17 @@
       <option id="csh">Cash</option>
       <option id="qr">QR</option>
     </select>   
+    <!-- untuk qr -->
+    <div id="cash-section" style="display: none; text-align: center; margin-bottom: 20px;">
+      <p style="font-size: 13px; margin-bottom: 10px; color: #8a7e74;">Tunjukkan QR Pesanan ini ke kasir:</p>
+      <div id="qrcode" style="display: flex; justify-content: center;"></div>
+    </div>
+
+    <div id="qr-section" style="display: none; text-align: center; margin-bottom: 20px;">
+      <p style="font-size: 13px; margin-bottom: 10px; color: #8a7e74;">Silakan scan QRIS di bawah ini untuk membayar:</p>
+      <div class="dummy-qris"><b>QRIS Dummy</b></div>
+    <button id="btn-sudah-bayar" class="btn-hijau">Konfirmasi Sudah Dibayar</button>
+    </div>
     <!-- Konfirmasi Pembayaran -->
      <a href="../Detail_pesanan/detail.html">
       <!-- Logic in hir -->
