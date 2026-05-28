@@ -3,9 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Admin Page</title>
 </head>
+<script src="https://unpkg.com/html5-qrcode"></script>
 <body>
+  <!-- Bagian Navbar -->
+  <header>
+   <div id="navbar">
+      <nav>
+       <ul><a><li>Lihat Stok</li></a></ul>
+       <ul><a><li>Total Transaksi</li></a></ul>
+       <ul><a><li>Lihat Stok</li></a></ul>
+      </nav>
+   </div>
+
+   <!-- Scan Qr -->
+   <h2>Pemindai QR Code</h2>
+    
+    <div id="reader"></div>
+
+    <div class="result-container">
+        <strong>Hasil Pindaian:</strong> 
+        <br><br>
+        <span id="result" style="word-wrap: break-word; font-weight: bold; color: #0056b3;">
+            Menunggu QR Code...
+        </span>
+    </div>
   
 </body>
 </html>
