@@ -171,3 +171,13 @@ table button:hover {
   color: #b5ada5;
   cursor: not-allowed;
 }
+
+.summary-row td {
+  border-bottom: none;
+  padding: 5px 10px;
+}
+
+.grand-total-row td {
+  border-top: 1px dashed #e1dbd6;
+  padding-top: 10px;
+}

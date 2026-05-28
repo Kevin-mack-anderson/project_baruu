@@ -38,39 +38,71 @@ function add(nama, harga) {
 // Render ulang tampilan tabel keranjang
 function updateCartUI() {
   const table = document.querySelector('table');
-
-  // Reset isi table
-  table.innerHTML = `
-    <tr>
-      <th>Pesanan</th>
-      <th>Jumlah</th>
-      <th>Subtotal</th>
-    </tr>
+    
+    // Reset isi tabel dan kembalikan struktur header
+    table.innerHTML = `
+      <tr>
+        <th>Pesanan</th>
+        <th>Jumlah</th>
+        <th>Subtotal</th>
+      </tr>
     `;
 
-    
+    let totalHarga = 0;
 
-// Looping data dalam cart
-for (const [nama, item] of Object.entries(cart)) {
-  const row = table.insertRow();
+    // Looping data di dalam objek cart untuk dibuatkan baris baru
+    for (const [nama, item] of Object.entries(cart)) {
+        const row = table.insertRow();
+        
+        // Kolom Nama Pesanan
+        row.insertCell(0).textContent = nama;
+        
+        // Kolom Kuantitas dengan tombol interaktif +/-
+        const cellQty = row.insertCell(1);
+        cellQty.innerHTML = `
+            <button onclick="changeQty('${nama}', -1)" style="padding: 2px 8px; cursor: pointer;">-</button>
+            <span style="margin: 0 10px;">${item.qty}</span>
+            <button onclick="changeQty('${nama}', 1)" style="padding: 2px 8px; cursor: pointer;">+</button>
+        `;
 
-  // Kolom nama pesanan
-  row.insertCell(0).textContent = nama;
+        // Kolom Subtotal
+        const subtotal = item.harga * item.qty;
+        totalHarga += subtotal;
+        row.insertCell(2).textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
+    }
 
-  // Kolom kuantitas
-  const cellQty = row.insertCell(1);
-  cellQty.innerHTML = `
-    <button onclick="changeQty('${nama}', -1)" style="padding: 2px 8px;
-      cursor:pointer;">-</button>
-      <span style="margin: 0 10px;">${item.qty}</span>
-      <button onclick="changeQty('${nama}', 1)" style="padding: 2px 8px; cursor: pointer;">+</button>  
-  `;
+    // Hitung Pajak (Menggunakan standar PPN 11%)
+    const pajak = totalHarga * 0.11;
+    const totalBayar = totalHarga + pajak;
 
-  // Kolom subtotal
-  const subtotal = item.harga * item.qty;
-  row.insertCell(2).textContent = `\ Rp \ ${subtotal.toLocaleString('id-ID')}`;
- } 
-} 
+    // Jika ada item di keranjang, tampilkan rincian total pembayaran di bawah tabel
+    if (totalHarga > 0) {
+        // 1. Baris Total Item
+        const rowTotal = table.insertRow();
+        rowTotal.className = "summary-row";
+        rowTotal.innerHTML = `
+            <td colspan="2" style="text-align: right; font-weight: bold;">Total Menu:</td>
+            <td style="font-weight: bold;">Rp ${totalHarga.toLocaleString('id-ID')}</td>
+        `;
+
+        // 2. Baris Pajak PPN 11%
+        const rowPajak = table.insertRow();
+        rowPajak.className = "summary-row";
+        rowPajak.innerHTML = `
+            <td colspan="2" style="text-align: right; color: #8a7e74;">Pajak (PPN 11%):</td>
+            <td style="color: #8a7e74;">Rp ${pajak.toLocaleString('id-ID')}</td>
+        `;
+
+        // 3. Baris Total Bayar keseluruhan
+        const rowGrandTotal = table.insertRow();
+        rowGrandTotal.className = "summary-row grand-total-row";
+        rowGrandTotal.innerHTML = `
+            <td colspan="2" style="text-align: right; font-weight: bold; color: #4a3c31;">Total Bayar:</td>
+            <td style="font-weight: bold; color: #4a3c31; font-size: 14px;">Rp ${totalBayar.toLocaleString('id-ID')}</td>
+        `;
+    }
+}
+
 // Mengubah kuantitas item di keranjang
 function changeQty(nama, delta) {
   if (cart[nama]) {
