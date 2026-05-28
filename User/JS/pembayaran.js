@@ -64,69 +64,151 @@ document.addEventListener('DOMContentLoaded', () => {
         const cashSection = document.getElementById('cash-section');
         const qrSection = document.getElementById('qr-section');
         const qrContainer = document.getElementById('qrcode');
+        const btnKonfirmasi = document.getElementById('btn-konfirmasi');
         const btnSudahBayar = document.getElementById('btn-sudah-bayar');
 
         opsiCash.value = "Cash";
         opsiQR.value = "QR";
 
-        function updatePaymentUI() {
-            const method = selectBayar.value;
-
-            if (method === "Cash") {
-                cashSection.style.display = "block";
-                qrSection.style.display = "none";
-
-                // Hapus yang lama kemudian isi baru data JSON pesanan
-                qrContainer.innerHTML = "";
-                const orderData = {
-                    tipe: tipePesanan,
-                    total: totalBayar,
-                    items: cart
-                };
-
-                new QRCode(qrContainer, {
-                    text: JSON.stringify(orderData),
-                    width: 150,
-                    height: 150,
-                    colorDark: "#4a3c31",
-                    colorLight: "#ffffff"
-                });
-            } else if (method === "QR") {
-                cashSection.style.display = "none";
-                qrSection.style.display = "block";
-            }
-        }
-
         // Logika tipe pesanan
         if (tipePesanan === 'Jadwal') {
             opsiCash.disabled = true;
-            opsiCash.textContent = "Cash Khusus (Walk-In / Ojol)";
-            selectBayar.value = "QR";
+            opsiCash.textContent = "Cash (Khusus Walk-In/Ojol)";
+            selectBayar.vakue = "QR";
         } else {
             opsiCash.disabled = false;
             opsiCash.textContent = "Cash";
-            selectBayar.value = "Cash";
+            selectBayar.vakue = "Cash";
         }
 
-        // Panggil fungsi
-        updatePaymentUI();
+        // Var utk timer
+        let countdownInterval;
+        let timeLeft = 60;
 
-        // Panggil fungsi setiap user ubah dropdown
-        selectBayar.addEventListener('change', updatePaymentUI);
-
-        // Logika tombol sudah dibayar untuk simulasinya
-        btnSudahBayar.addEventListener('click', () => {
-            alert("Terima Kasih! Pesanan Telah Dibayar")
-
-            // letak logika mengubah status pesanan
-            btnSudahBayar.textcontent = "Pembayaran Berhasil!";
-            btnSudahBayar.disabled = true;
-            btnSudahBayar.style.backgroundColor = "#8a7e74";
-        });
-
-        // Simpan datanya
-        const btnKonfirmasi = document.querySelector('.okk');
+        // Logika saat tombol konfirmasi ditekan
         btnKonfirmasi.addEventListener('click', () => {
-            localStorage.setItem('metodePembayaran', selectBayar.value)
+            const method = selectBayar.value;
+
+            // Simpan lokal
+            localStorage.setItem('metodePembayaran', method);
+
+            // Kunci tombol dropdown dan sembunyikan tombol konfirmasi utama
+            selectBayar.disabled = true;
+            btnKonfirmasi.style.display = "none";
+
+            if (method === "Cash") {
+                cashSection.style.display = "block";
+
+                // Generate qr untuk kasir
+                qrContainer.innerHTML = "";
+                const orderData = {tipe: tipePesanan, total: totalBayar, items: cart};
+                new QRcode(qrContainer, {
+                    text: JSON.stringify(orderData),
+                    width: 150, height: 150, colorDark: "#4a3c31", colorLight: "#ffffff"
+                });
+            } else if (method === "QR") {
+                qrSection.style.display = "block";
+                mulaiTimer();
+            }
         });
+
+        // Fungsi hitung mundur
+        function mulaiTimer() {
+            const timerDisplay = document.getElementById('timer-display');
+            const qrisBox = document.getElementById('qris-box');
+            const expiredMsg = document.getElementById('expired-msg');
+
+            countdownInterval = setInterval(() => {
+                timeLeft--;
+
+                // Format angka agar dua digit
+                let detik = timeLeft < 10 ? "0" + timeLeft : timeLeft;
+                timerDisplay.textContent = `00:${detik}`;
+
+                // Jika waktu habis
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    qrisBox.style.display = "none";
+                    btnSudahBayar.style.display = "none";
+                    timerDisplay.style.display = "none";
+                    expiredMsg.style.display = "block";
+                }
+            }, 1000);
+        }
+
+        // Logika sudah dibayar (qr)
+        btnSudahBayar.addEventListener('click', () => {
+            clearInterval(countdownInterval);
+            alert("Terimakasih! Pembayaran Berhasi Diverifikasi!");
+
+            btnSudahBayar.text.textContent = "Lanjut ke Detail Pesanan";
+            btnSudahBayar.style.backgroundColor = "#4a3c31";
+
+            // Ubah fungsi tombol menjadi pindah halaman
+            btnSudahBayar.addEventListener('click', () => {
+                window.location.href = "../Detail_pesanan/detail.html";
+            });
+        });
+
+
+//         function updatePaymentUI() {
+//             const method = selectBayar.value;
+
+//             if (method === "Cash") {
+//                 cashSection.style.display = "block";
+//                 qrSection.style.display = "none";
+
+//                 // Hapus yang lama kemudian isi baru data JSON pesanan
+//                 qrContainer.innerHTML = "";
+//                 const orderData = {
+//                     tipe: tipePesanan,
+//                     total: totalBayar,
+//                     items: cart
+//                 };
+
+//                 new QRCode(qrContainer, {
+//                     text: JSON.stringify(orderData),
+//                     width: 150,
+//                     height: 150,
+//                     colorDark: "#4a3c31",
+//                     colorLight: "#ffffff"
+//                 });
+//             } else if (method === "QR") {
+//                 cashSection.style.display = "none";
+//                 qrSection.style.display = "block";
+//             }
+//         }
+
+//         // Logika tipe pesanan
+//         if (tipePesanan === 'Jadwal') {
+//             opsiCash.disabled = true;
+//             opsiCash.textContent = "Cash Khusus (Walk-In / Ojol)";
+//             selectBayar.value = "QR";
+//         } else {
+//             opsiCash.disabled = false;
+//             opsiCash.textContent = "Cash";
+//             selectBayar.value = "Cash";
+//         }
+
+//         // Panggil fungsi
+//         updatePaymentUI();
+
+//         // Panggil fungsi setiap user ubah dropdown
+//         selectBayar.addEventListener('change', updatePaymentUI);
+
+//         // Logika tombol sudah dibayar untuk simulasinya
+//         btnSudahBayar.addEventListener('click', () => {
+//             alert("Terima Kasih! Pesanan Telah Dibayar")
+
+//             // letak logika mengubah status pesanan
+//             btnSudahBayar.textcontent = "Pembayaran Berhasil!";
+//             btnSudahBayar.disabled = true;
+//             btnSudahBayar.style.backgroundColor = "#8a7e74";
+//         });
+
+//         // Simpan datanya
+//         const btnKonfirmasi = document.querySelector('.okk');sada
+//         btnKonfirmasi.addEventListener('click', () => {
+//             localStorage.setItem('metodePembayaran', selectBayar.value)
+//         });
 });

@@ -19,21 +19,24 @@
       <option id="qr">QR</option>
     </select>   
     <!-- untuk qr -->
+    <button id="btn-konfirmasi" class="okk">Konfirmasi Pembayaran</button>
     <div id="cash-section" style="display: none; text-align: center; margin-bottom: 20px;">
-      <p style="font-size: 13px; margin-bottom: 10px; color: #8a7e74;">Tunjukkan QR Pesanan ini ke kasir:</p>
+      <p style="font-size: 13px; margin-bottom: 10px; color: #8a7e74;">Pesanan Terkunci, Tunjukkan QR Pesanan ini ke kasir:</p>
       <div id="qrcode" style="display: flex; justify-content: center;"></div>
+      <a href="../Detail_pesanan/detail.html" style="margin-top :15px;">
+        <button class="btn-hijau">Selesai / Lanjut</button>
+      </a>
     </div>
 
     <div id="qr-section" style="display: none; text-align: center; margin-bottom: 20px;">
-      <p style="font-size: 13px; margin-bottom: 10px; color: #8a7e74;">Silakan scan QRIS di bawah ini untuk membayar:</p>
-      <div class="dummy-qris"><b>QRIS Dummy</b></div>
-    <button id="btn-sudah-bayar" class="btn-hijau">Konfirmasi Sudah Dibayar</button>
+      <p style="font-size: 13px; margin-bottom: 10px; color: #8a7e74;">Silakan scan QRIS di bawah ini untuk membayar (Berlaku 1 Menit):</p>
+      <p id="timer-dispaly" style="font-size: 18px; font-weight: bold; color: #d32f2f; margin-bottom: 10px;">01.00</p>
+      <div class="dummy-qris" id="qris-box"><b>QRIS Dummy</b></div>
+      <p id="expired-msg" style="display: none; color: #d32f2f; font-weight: bold; font-size: 14px; margin-bottom: 15px;">Waktu Habis</p>
+      <button id="btn-sudah-bayar" class="btn-hijau">Konfirmasi Sudah Dibayar</button>
     </div>
-    <!-- Konfirmasi Pembayaran -->
-     <a href="../Detail_pesanan/detail.html">
-      <!-- Logic in hir -->
-     <button class="okk">Konfirmasi Pembayaran</button>
-     </a>
+    
+     
 
   <script src="../JS/pembayaran.js"></script>
 </body>
