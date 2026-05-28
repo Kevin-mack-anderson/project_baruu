@@ -161,6 +161,10 @@ document.addEventListener('DOMContentLoaded', () => {
       event.preventDefault(); //biar ga pindah halaman
     } else {
       localStorage.setItem('dataPesananKopi', JSON.stringify(cart))
+      ///Simpan tipe pesanan 
+      localStorage.setItem('tipePesanan', document.getElementById('asal').value);
     }
   })
 });
+
+

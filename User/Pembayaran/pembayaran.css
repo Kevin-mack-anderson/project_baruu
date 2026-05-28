@@ -1,0 +1,108 @@
+/* Reset & Gaya Dasar */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #fdfcfb;
+  color: #3e3835;
+  padding: 25px 20px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Judul Bagian */
+h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #4a3c31;
+  margin-top: 25px;
+  margin-bottom: 12px;
+}
+
+/* Tabel Rincian Pesanan */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+th {
+  text-align: left;
+  padding: 10px;
+  background-color: #f5f1ed;
+  color: #4a3c31;
+  font-weight: 600;
+  border-bottom: 2px solid #e1dbd6;
+}
+
+td {
+  padding: 10px;
+  border-bottom: 1px solid #ece8e4;
+  color: #3e3835;
+  vertical-align: middle;
+}
+
+/* Gaya khusus untuk baris totalan (3 baris terakhir di tabel) */
+table tr:nth-last-child(3) td,
+table tr:nth-last-child(2) td {
+  border-bottom: none;
+  padding: 6px 10px;
+}
+
+table tr:last-child td {
+  border-bottom: none;
+  border-top: 1px dashed #e1dbd6; /* Garis putus-putus tipis untuk Grand Total */
+  padding-top: 12px;
+}
+
+/* Dropdown Pilihan Pembayaran */
+.pilihan-byr {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e1dbd6;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #3e3835;
+  font-size: 14px;
+  outline: none;
+  margin-bottom: 25px;
+}
+
+.pilihan-byr:focus {
+  border-color: #a39281;
+}
+
+/* Gaya untuk opsi yang dinonaktifkan (Cash saat Scheduling) */
+.pilihan-byr option:disabled {
+  color: #b5ada5;
+  background-color: #f5f1ed;
+}
+
+/* Tombol Konfirmasi Pembayaran */
+.okk {
+  width: 100%;
+  background-color: #4a3c31;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.okk:hover {
+  background-color: #382d24;
+}
+
+/* Reset Link tag agar tombol tidak berubah warna teksnya */
+a {
+  text-decoration: none;
+  display: block;
+}
