@@ -1,4 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+        // Untk cek pesanan apakah sudah dibayar sebelumnya
+        if (localStorage.getItem('statusPembayaran') === 'Lunas') {
+            // replace digunakan agar user tidak menekan tombol back terus menerus
+            window.location.replace("../Detail_pesanan/detail.html");
+            return;
+        }
         //Ambil data keranjang dari localstorage
         const cartData = localStorage.getItem('dataPesananKopi');
         const tipePesanan = localStorage.getItem('tipePesanan');
@@ -84,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Var utk timer
         let countdownInterval;
-        let timeLeft = 120;
+        let timeLeft = 40;
 
         // Logika saat tombol konfirmasi ditekan
         btnKonfirmasi.addEventListener('click', () => {
@@ -164,7 +171,11 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(countdownInterval);
             alert("Terimakasih! Pembayaran Berhasi Diverifikasi!");
 
-            btnSudahBayar.text.textContent = "Lanjut ke Detail Pesanan";
+            // add kunci untuk lunas
+            localStorage.setItem('statusPembayaran', 'Lunas');
+            // add kunci end
+
+            btnSudahBayar.textContent = "Lanjut ke Detail Pesanan";
             btnSudahBayar.style.backgroundColor = "#4a3c31";
 
             // Ubah fungsi tombol menjadi pindah halaman
@@ -173,5 +184,11 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-
+         // Logika tombol selesai/lanjut khusus cash
+        const linkSelesaiCash = document.getElementById('link-selesai-cash');
+        if (linkSelesaiCash) {
+            linkSelesaiCash.addEventListener('click', () => {
+                localStorage.setItem('statusPembayaran', 'Lunas');
+            });
+        }
     });
