@@ -163,6 +163,8 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('dataPesananKopi', JSON.stringify(cart))
       ///Simpan tipe pesanan 
       localStorage.setItem('tipePesanan', document.getElementById('asal').value);
+      // Agar status pesanan baru tidak dianggap lunas
+      localStorage.removeItem('statusPembayaran');
     }
   })
 });
