@@ -80,8 +80,8 @@
 
      <!-- Untuk penjadwalan -->
       <div id="waktu-penjadwalan" style="display: none; margin-top: 15px; padding: 12px; background-color: #fff; border: 1px solid #e1dbd6; border-radius: 6px;">
-        <p style="font-size: 13px; font-weight: 600; color: #4a3c31; margin-bottom: 8px;">Pilih Waktu Pengambilan (08:00 - 21:00):</p>
-        <input type="time" id="waktu-jadwal" oninput="checkForm()" style="width: 100%; padding: 8px; border: 1px solid #e1dbd6; border-radius: 4px; outline: none; font-family: inherit;">
+        <p style="font-size: 13px; font-weight: 600; color: #4a3c31; margin-bottom: 8px;">Pilih Waktu Pengambilan (09:00AM - 09:00PM):</p>
+        <input type="time" id="waktu-jadwal" min="09:00" max="21.00" oninput="checkForm()" style="width: 100%; padding: 8px; border: 1px solid #e1dbd6; border-radius: 4px; outline: none; font-family: inherit;">
         <p id="error-waktu" style="color: #d32f2f; font-size: 12px; margin-top: 6px; display: none;">Waktu di luar jam operasional!</p>
     </div>
 

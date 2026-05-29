@@ -102,11 +102,14 @@ function toggleSched() {
   if (asal === 'Jadwal') {
     // HTMLFormControlsCollection.log("Opsi web jadwal dipilih")
     wadahWaktu.style.display = 'block';
+    inputWaktu.value = "";
   } else {
     wadahWaktu.style.display ='none';
     inputWaktu.value = "";
     errorWaktu.style.display = 'none';
   }
+  // tutup konfirmasi
+  checkForm();
 }
 
 // Validasi tombol konfirmasi
@@ -127,11 +130,9 @@ function checkForm() {
       isWaktuValid = false;
       errorWaktu.style.display = 'none';
     } else {
-  //  Pisahkan jam untuk mengecek batas 08.00-21.00
-      const jam = parseInt(waktuInput.split(':')[0]);
-
-      if (jam < 8 || jam > 20) {
-        iswaktuValid = false;
+  //  Validasi format string 24 jam (09:00 - 21:00)
+      if (waktuInput < "09:00" || waktuInput > "21:00") {
+        isWaktuValid = false;
         errorWaktu.style.display = 'block';
       } else {
         isWaktuValid = true;
@@ -143,7 +144,7 @@ function checkForm() {
   // Cek keranjang kosong
 
   // Tombol aktif jika keranjang ada isi
-  if (!isCartEmpty && asal != "") {
+  if (!isCartEmpty && asal !== "" && isWaktuValid) {
     btnKonfirmasi.disabled = false;
     LinkKonfirmasi.style.pointerEvents = "auto";
     btnKonfirmasi.style.opacity = "1";
@@ -185,7 +186,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Gabungan tanggal dan jam
         const waktuLengkap = `${tanggalFormat} ${jamDipilih}`;
-        localStorage.setItem('waktuJadwal');
+        localStorage.setItem('waktuJadwal', waktuLengkap);
+      } else {
+        localStorage.removeItem('waktuJadwal');
       }
     }
   })

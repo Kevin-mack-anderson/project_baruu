@@ -43,8 +43,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const pajak = totalHarga * 0.11;
         const totalBayar = totalHarga + pajak;
 
+        // code dubging
+        console.log("Tipe pesanan:", tipePesanan)
+        console.log("Waktu Jadwal dari storage:", localStorage.getItem('waktuJadwal'));
+        let barisWaktuJadwal = "";
+        // Agar keterangan waktu terdapat di table khusus scheduling
+        if (tipePesanan === 'Jadwal') {
+            const waktuJadwal = localStorage.getItem('waktuJadwal');
+            if (waktuJadwal) {
+                // Memisahkan tanggal dan jam
+                const jamAmbil = waktuJadwal.split(' ')[1];
+                
+                barisWaktuJadwal = `
+                     <tr class="summary-row">
+                        <td colspan="2" style="text-align: right; color: #4a3c31; font-weight: 500;">Waktu Ambil:</td>
+                        <td style="color: #4a3c31; font-weight: bold;">${jamAmbil} WIB</td>
+                    </tr>
+                 `;
+            }
+        }
+
+
         // Tambahkan baris Total dan Pajak
         table.innerHTML += `
+            ${barisWaktuJadwal}
             <tr>
                 <td colspan="2" style="text-align: right; font-weight: bold;">Total Menu:</td>
                 <td style="font-weight: bold;">Rp ${totalHarga.toLocaleString('id-ID')}</td>
