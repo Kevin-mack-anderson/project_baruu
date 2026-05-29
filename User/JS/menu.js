@@ -1,29 +1,5 @@
 let cart = {};
 
-// filter menu
-function fiterMenu() {
-//   const filterValue = document.getElementById('category-filter').value;
-//   const menuContainer = document.getElementById('menu-container');
-  const menuCards = document.querySelectorAll('.menu-card');
-
-// // Tampilkan "container menu" when user has done choice option
-// if (filterValue !== "") {
-//   menuContainer.style.display = "grid"; ///Asumsi saja css nya grid
-// } else {
-//   menuContainer.style.display = "none";
-// }
-
-// filter setiap kartu berdasarkan data category
-menuCards.forEach(card => {
-  const category = card.getAttribute('data-category');
-  if (filterValue === 'semua' || category === filterValue) {
-    card.style.display = 'block';
-  } else {
-    card.style.display = 'none';
-  }
- });
-}
-
 // Fungsi tambah ke keranjang (saat kartu di klik)
 function add(nama, harga) {
   if (cart[nama]) {
@@ -120,8 +96,16 @@ function changeQty(nama, delta) {
 // Fungsi penjadwalan
 function toggleSched() {
   const asal = document.getElementById('asal').value;
-  if (asal == 'Jadwal') {
-    HTMLFormControlsCollection.log("Opsi web jadwal dipilih")
+  const wadahWaktu = document.getElementById('waktu-penjadwalan');
+  const inputWaktu = document.getElementById('waktu-jadwal');
+  const errorWaktu = document.getElementById('error-waktu');
+  if (asal === 'Jadwal') {
+    // HTMLFormControlsCollection.log("Opsi web jadwal dipilih")
+    wadahWaktu.style.display = 'block';
+  } else {
+    wadahWaktu.style.display ='none';
+    inputWaktu.value = "";
+    errorWaktu.style.display = 'none';
   }
 }
 
@@ -130,9 +114,33 @@ function checkForm() {
   const asal = document.getElementById('asal').value;
   const LinkKonfirmasi = document.getElementById('konfirmasi');
   const btnKonfirmasi = LinkKonfirmasi.querySelector('button');
-  
-  // Cek keranjang kosong
   const isCartEmpty = Object.keys(cart).length === 0;
+
+  let isWaktuValid = true;
+
+  // Logika jadwal
+  if (asal === 'Jadwal') {
+    const waktuInput = document.getElementById('waktu-jadwal').value;
+    const errorWaktu = document.getElementById('error-waktu');
+
+    if (waktuInput === "") {
+      isWaktuValid = false;
+      errorWaktu.style.display = 'none';
+    } else {
+  //  Pisahkan jam untuk mengecek batas 08.00-21.00
+      const jam = parseInt(waktuInput.split(':')[0]);
+
+      if (jam < 8 || jam > 20) {
+        iswaktuValid = false;
+        errorWaktu.style.display = 'block';
+      } else {
+        isWaktuValid = true;
+        errorWaktu.style.display = 'none';
+      }
+    }
+  }
+
+  // Cek keranjang kosong
 
   // Tombol aktif jika keranjang ada isi
   if (!isCartEmpty && asal != "") {
@@ -160,11 +168,25 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!yakin) {
       event.preventDefault(); //biar ga pindah halaman
     } else {
+      const asalPesanan = document.getElementById('asal').value;
       localStorage.setItem('dataPesananKopi', JSON.stringify(cart))
       ///Simpan tipe pesanan 
       localStorage.setItem('tipePesanan', document.getElementById('asal').value);
       // Agar status pesanan baru tidak dianggap lunas
       localStorage.removeItem('statusPembayaran');
+
+      // Simpan waktu khusus penjadwalan
+      if (asalPesanan === 'Jadwal') {
+        const jamDipilih = document.getElementById('waktu-jadwal').value;
+
+        // Ambil tanggal hanya hari ini dan objek data bawaan
+        const hariIni = new Date();
+        const tanggalFormat = hariIni.toISOString().split('T')[0];
+
+        // Gabungan tanggal dan jam
+        const waktuLengkap = `${tanggalFormat} ${jamDipilih}`;
+        localStorage.setItem('waktuJadwal');
+      }
     }
   })
 });
