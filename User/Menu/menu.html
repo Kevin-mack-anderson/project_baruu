@@ -19,12 +19,12 @@
 
                 <div class="menu-grid" id="menu-container" ">
                     <div class="menu-card" data-category="minuman" onclick="add('Air Putih', 5000)">
-                        <img src="../img//air_putih.jpg" alt="Air Putih">
+                        <img src="../img/air_putih.jpg" alt="Air Putih">
                         <div class="menu-info"><b>Air Putih</b><span>5rb</span></div>
                     </div>
                     
                     <div class="menu-card" data-category="minuman" onclick="add('Kopi Aren', 15000)">
-                        <img src="../img//kopi_aren.jpg" alt="Kopi Aren">
+                        <img src="../img/kopi_aren.jpg" alt="Kopi Aren">
                         <div class="menu-info"><b>Kopi Aren</b><span>15rb</span></div>
                     </div>
                     
@@ -76,6 +76,14 @@
                         <option value="Jadwal">📅 Web (Penjadwalan)</option>
                         <option value="Ojol">🛵 Ojek Online</option>
                     </select>
+     </div>
+
+     <!-- Untuk penjadwalan -->
+      <div id="waktu-penjadwalan" style="display: none; margin-top: 15px; padding: 12px; background-color: #fff; border: 1px solid #e1dbd6; border-radius: 6px;">
+        <p style="font-size: 13px; font-weight: 600; color: #4a3c31; margin-bottom: 8px;">Pilih Waktu Pengambilan (08:00 - 21:00):</p>
+        <input type="time" id="waktu-jadwal" oninput="checkForm()" style="width: 100%; padding: 8px; border: 1px solid #e1dbd6; border-radius: 4px; outline: none; font-family: inherit;">
+        <p id="error-waktu" style="color: #d32f2f; font-size: 12px; margin-top: 6px; display: none;">Waktu di luar jam operasional!</p>
+    </div>
 
 <!-- Konfirmasi Pesanan -->
  <a id="konfirmasi" href="../Pembayaran/pembayaran.html">
