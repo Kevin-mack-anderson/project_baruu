@@ -3,32 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Detail Pesan</title>
+  <title>Detail Pesanan</title>
+  <link rel="stylesheet" href="detail.css"
 </head>
 <body>
-  <h1>Detail Pesanan</h1>
-  <!-- Bagian Pesanan -->
-   <table>
-    <tr>
-      <th>Pilihan</th>
-      <th>Kuantitas</th>
-    </tr>
-    <tr>
-      <td>tes</td>
-      <td>tes</td>
-    </tr>
-   </table>
+  <div class="container">
+    <h3>PEMBAYARAN BERHASIL</h3>
+    <p class="subtitle"> Berikut adalah rincian pesanan kamu</p>
 
-   <!-- Nomor Antrian -->
-    <div>
-    <h4>Nomor Antrian Anda</h4>
+    <div class="info-box" id="info-pesanan">      
     </div>
 
-    <!-- Status Pesanan -->
+    <table id="table-detail">
+    </table>
 
-     <div>
+    <div class="queue-box">
+      <h4>Nomor Antrian</h4>
+      <h1 id="nomor-antrean">--</h1>
+    </div>
+
+    <div class="status-box">
       <h4>Status Pesanan</h4>
-       <p1>Nanti ada statusnya </p1>
-     </div>
+      <div id="status-pesanan" class="status-badge">Memuat Status...</div>
+      <p class="status-desc">Pesanan Kamu Sudah Masuk dan Siap Diproses</p>
+    </div>
+
+    <button class="btn-kembali" onclick="selesaiPesanan()">Selesai, Kembal ke Menu</button>
+  </div>  
+
+  <script src="../JS/detailps.js"></script>
 </body>
 </html>
