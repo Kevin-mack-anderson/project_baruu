@@ -27,19 +27,34 @@
         const tbody = document.getElementById('isi-table');
         tbody.innerHTML = '';
 
+        let hitungTotal = 0;
+
         for (const [nama, item] of Object.entries(dataPesanan.items)) {
+          // Hitung subtotal
+          const subtotal = item.harga * item.qty;
+          hitungTotal += subtotal;
+
+
           const tr = document.createElement('tr');
           tr.innerHTML =`
               <td>${nama}</td>
               <td>${item.qty}</td>
-              <td>Rp ${(item.harga * item.qty).toLocaleString('id-ID')}</td>
+              <td>Rp ${subtotal.toLocaleString('id-ID')}</td>
           `;
           tbody.appendChild(tr);
         }
+
+        // hitung pajak
+        const pajak = hitungTotal * 0.11;
+        // simpan ke variabel kalkulator utama
+        totalTagihanScanned = hitungTotal + pajak;
         // masukan total tagihan kedalam kalkulator
-        totaltagihanScanned = document.getElementById('uang-diterima');
+       document.getElementById('total-tagihan').textContent = `Rp ${totalTagihanScanned.toLocaleString('id-ID')}`;
+        // aktifkan kolom input uang
+       const inputUang = document.getElementById('uang-diterima');
         inputUang.disabled = false;
         inputUang.focus();
+
       } catch(error) {
         alert("QR Code tidak dikenali atau bukan dari aplikasi pelanggan!!");
         html5QrcodeScanner.resume();
@@ -80,4 +95,4 @@
       // refresh siste,
       window.location.reload();
     });
- }) ;
+ });
