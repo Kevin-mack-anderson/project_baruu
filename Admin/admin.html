@@ -1,34 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADMIN POS</title>
+    <link rel="stylesheet" href="admin.css">
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
-<script src="https://unpkg.com/html5-qrcode"></script>
 <body>
-  <!-- Bagian Navbar -->
-  <header>
-   <div id="navbar">
-      <nav>
-       <ul><a><li>Lihat Stok</li></a></ul>
-       <ul><a><li>Total Transaksi</li></a></ul>
-       <ul><a><li>Lihat Stok</li></a></ul>
-      </nav>
-   </div>
+    <div class="layar-pos">
 
-   <!-- Scan Qr -->
-   <h2>Pemindai QR Code</h2>
-    
-    <div id="reader"></div>
+        <div class="kiri-scanner">
+            <h2>Scanner Kasir</h2>
+            <p>Arahkan QR Code pelanggan ke sini</p>
 
-    <div class="result-container">
-        <strong>Hasil Pindaian:</strong> 
-        <br><br>
-        <span id="result" style="word-wrap: break-word; font-weight: bold; color: #0056b3;">
-            Menunggu QR Code...
-        </span>
+            <div id="reader"></div>
+        </div>
+
+        <div class="kanan-kasir">
+            <h2>Mesin Kasir (POS)</h2>
+            <p id="info-pesanan">Status: <span style="color: #d32f2f;">Menunggu Pindaian</span></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Menu</th>
+                        <th>Qty</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody id="isi-table">
+                </tbody>
+            </table>
+
+            <div class="kalkulator">
+                <div class="baris-kalkulator">
+                    <span>Total Tagihan:</span>
+                    <strong id="total-tagihan" style="font-size: 18px;">Rp 0</strong>
+                </div>
+                <div class="baris-kalkulator" style="margin-top: 15px;">
+                    <span>Uang Diterima:</span>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <strong>Rp</strong>
+                        <input type="number" id="uang-diterima" placeholder="0" disabled>
+                    </div>
+                </div>
+                     <hr style="margin: 15px 0; border: 0; border-top: 2px dashed #d1c9c2;">
+                     <div class="baris-kalkulator">
+                        <span style="color: #2e7d32; font-weight: bold;">Kembalian:</span>
+                        <strong id="kembalian" style="color: #2e7d32; font-size: 18px;">Rp 0</strong>
+                    </div>
+
+                    <button id="btn-proses" disabled>Selesaikan Pesanan</button>
+                </div>
+        </div>
     </div>
-  
+    
+    <script src="admin.js"></script>
 </body>
 </html>

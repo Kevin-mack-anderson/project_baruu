@@ -1,5 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
-
+        // (PENGEMBANGAN)
+        // Fitur untuk memindahkan otomatis halaman ketika kasir sudah mengkonfirmasi
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'statusPembayaran' && event.newValue === 'Lunas') {
+                alert("PEMBAYARAN BERHASIL");
+                window.location.replace("../Detail_pesanan/detail.html");
+            }
+        });
+        
         // Untk cek pesanan apakah sudah dibayar sebelumnya
         if (localStorage.getItem('statusPembayaran') === 'Lunas') {
             // replace digunakan agar user tidak menekan tombol back terus menerus
@@ -206,11 +214,11 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-         // Logika tombol selesai/lanjut khusus cash
-        const linkSelesaiCash = document.getElementById('link-selesai-cash');
-        if (linkSelesaiCash) {
-            linkSelesaiCash.addEventListener('click', () => {
-                localStorage.setItem('statusPembayaran', 'Lunas');
-            });
-        }
+         // Logika tombol selesai/lanjut khusus cash (PENGEMBANGAN)
+        // const linkSelesaiCash = document.getElementById('link-selesai-cash');
+        // if (linkSelesaiCash) {
+        //     linkSelesaiCash.addEventListener('click', () => {
+        //         localStorage.setItem('statusPembayaran', 'Lunas');
+        //     });
+        // }
     });
