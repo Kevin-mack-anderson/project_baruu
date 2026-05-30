@@ -89,7 +89,7 @@
     // proses penyelesaian
     btnProses.addEventListener('click', () => {
       // set lunas agar pindah halaman
-      localeStorage.setItem('statusPembayaran', 'Lunas');
+      localStorage.setItem('statusPembayaran', 'Lunas');
       alert("Pesanan berhasil diproses, kembali ke halaman awal");
 
       // refresh siste,
