@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Var utk timer
         let countdownInterval;
-        let timeLeft = 40;
+        let timeLeft = 120;
 
         // Logika saat tombol konfirmasi ditekan
         btnKonfirmasi.addEventListener('click', () => {
