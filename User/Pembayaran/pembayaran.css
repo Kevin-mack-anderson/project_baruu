@@ -137,3 +137,5 @@ a {
 .btn-hijau:hover:not(:disabled) {
   background-color: #1b5e20;
 }
+
+@keyframes blink { 50% { opacity: 0.5;} }
