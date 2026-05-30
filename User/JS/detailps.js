@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const cart = JSON.parse(cartData);
       const tipePesanan = localStorage.getItem('tipePesanan');
       const metodePembayaran = localStorage.getItem('metodePembayaran');
-      const waktuJadwal = localStorage.getItem('waktu-jadwal');
+      const waktuJadwal = localStorage.getItem('waktuJadwal');
 
       // render kotak info pesanan
       const infoBox = document.getElementById('info-pesanan');
@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <P><b>Metode Pembayaran: </b>${metodePembayaran}</P>
       `;
 
+      console.log("cek data tipe:", tipePesanan, "| waktu:", waktuJadwal)
       // tambahkan ket jam (khusus scheduling)
       if (tipePesanan === 'Jadwal' && waktuJadwal) {
         const jamAmbil = waktuJadwal.split(' ')[1];
