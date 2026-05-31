@@ -244,18 +244,56 @@ document.addEventListener('DOMContentLoaded', () => {
         // Logika sudah dibayar (qr)
         btnSudahBayar.addEventListener('click', () => {
             clearInterval(countdownInterval);
-            alert("Terimakasih! Pembayaran Berhasi Diverifikasi!");
 
-            // add kunci untuk lunas
-            localStorage.setItem('statusPembayaran', 'Lunas');
-            // add kunci end
+            // lock button agar tidak double click
+            btnSudahBayar.disabled = true;
+            btnSudahBayar.textContent = "Memverifikasi Pembayaran..";
+            btnSudahBayar.style.backgroundColor = "#8a7e74";
 
-            btnSudahBayar.textContent = "Lanjut ke Detail Pesanan";
-            btnSudahBayar.style.backgroundColor = "#4a3c31";
+            // siapkan payload data
+            const namaPanggilan = localStorage.getItem('namaPelanggan') || "Tanpa Nama";
+            const payloadQR = {
+                nama: namaPanggilan,
+                tipe: tipePesanan,
+                items: cart,
+                total: totalBayar
+            };
 
-            // Ubah fungsi tombol menjadi pindah halaman
-            btnSudahBayar.addEventListener('click', () => {
-                window.location.href = "../Detail_pesanan/detail.html";
+            // send ke backend
+            fetch('htpp;//127.0.0.1:5000/api/pesanan', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json'},
+                body: JSON.stringify(payloadQR)
+            })
+            .then(async res => {
+                const textRespon = await res.text();
+                try {
+                    return JSON.parse(textRespon);
+                } catch (err) {
+                    console.error("Response Server Error/Bukan JSON:", textRespon);
+                    throw new Error("Server Python Bermasalah!!")
+                }
+            })
+            .then(data => {
+                if(data.status === "sukses") {
+                    alert("terimakasih! Pembayaran Qr Berhasil Masuk!")
+                    // give kunci lunas
+                    localStorage.setItem('statusPembayaran', 'Lunas');
+                    // pindah ke detail pesanan
+                    window.location.href = "../Detail_pesanan/detail.html";
+                } else {
+                    alert("Gagal menyimpan: " + data.pesan);
+                    btnSudahBayar.disabled = false;
+                    btnSudahBayar.textContent = "Sudah Bayar";
+                    btnSudahBayar.style.backgroundColor = "#2e7d32";
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Gagal terhubung ke Server. Pastikan Backend menyala");
+                btnSudahBayar.disabled = false;
+                btnSudahBayar.textContent = "Sudah Bayar";
+                btnSudahBayar.style.backgroundColor = "#2e7d32";
             });
         });
 

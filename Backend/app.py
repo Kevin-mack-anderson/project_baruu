@@ -45,6 +45,7 @@ def total_hari_ini():
              "pendapatan": pendapatan
         }), 200
       except Exception as e:
+           print((f"TERJADI ERROR DI DATABASE: {e}"))
            return jsonify({
               "status": "error",
               "pesan": str(e)

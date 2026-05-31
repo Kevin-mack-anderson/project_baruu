@@ -46,7 +46,7 @@ def hitung_hari_ini():
       cursor.execute('''
         SELECT COUNT(*), SUM(total_harga)
         FROM riwayat_transaksi
-        WHERE data(waktu_dibuat) = date('now')
+        WHERE date(waktu_dibuat) = date('now')
       ''')
       hasil = cursor.fetchone()
       conn.close()
