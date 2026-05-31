@@ -13,10 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const tipePesanan = localStorage.getItem('tipePesanan');
       const metodePembayaran = localStorage.getItem('metodePembayaran');
       const waktuJadwal = localStorage.getItem('waktuJadwal');
+      const namaPelanggan = localStorage.getItem('namaPelanggan');
 
       // render kotak info pesanan
       const infoBox = document.getElementById('info-pesanan');
       let infoHTML = `
+        <p><b>Nama : </b> <span style="font-size: 16px; font-weight: bold; color: #4a3c31;">${namaPelanggan}</span></p>
         <P><b>Asal Pesanan: </b>${tipePesanan}</P>
         <P><b>Metode Pembayaran: </b>${metodePembayaran}</P>
       `;
