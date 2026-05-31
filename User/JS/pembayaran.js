@@ -260,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             // send ke backend
-            fetch('htpp;//127.0.0.1:5000/api/pesanan', {
+            fetch('http://127.0.0.1:5000/api/pesanan', { ///Gua error disini tadi cuk alamat http nyh
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json'},
                 body: JSON.stringify(payloadQR)

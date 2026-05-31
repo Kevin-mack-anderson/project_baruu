@@ -17,7 +17,7 @@ def init_db():
               tipe_pesanan TEXT NOT NULL,
               detail_menu TEXT NOT NULL,
               total_harga INTEGER NOT NULL,
-              waktu_dibuat DATETIME DEAFULT CURRENT_TIMESTAMP,
+              waktu_dibuat DATETIME DEFAULT CURRENT_TIMESTAMP,     
               status TEXT NOT NULL          
           )
       ''')
@@ -34,7 +34,7 @@ def simpan_transaksi(nama, tipe, detail, total, status='Selesai/Lunas'):
       cursor.execute('''
         INSERT INTO riwayat_transaksi (nama_pelanggan, tipe_pesanan, detail_menu, total_harga, status)
         VALUES (?, ?, ?, ?, ?)
-      '''), (nama, tipe, detail, total, status)
+      ''', (nama, tipe, detail, total, status)) ##inget, tutup kurungnya ada dua, tadi error disini
       conn.commit()
       conn.close()
 

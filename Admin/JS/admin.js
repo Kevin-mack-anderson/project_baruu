@@ -2,7 +2,7 @@
  document.addEventListener('DOMContentLoaded', () => {
 
   let totalTagihanScanned = 0;
-    let dataPesananScanned = null;
+  let dataPesananScanned = null;
     // fungsi baru: total transaksi hari ini, ngmabilnya python
     function muatTransaksiHariIni() {
       fetch('http://127.0.0.1:5000/api/transaksi/hari-ini')
@@ -35,6 +35,8 @@
         // ubah teks qr kembali menjadi object js
         const dataPesanan = JSON.parse(decodeText);
 
+        dataPesananScanned = dataPesanan;
+
         // tampilkan info
         document.getElementById('info-pesanan').innerHTML = `
           Status: <span style="color: #2e7d32; font-weight: bold;">Berhasil!!</span>
@@ -42,7 +44,7 @@
         `;
 
         // cetak isi table
-        const tbody = document.getElementById('isi-table');
+        const tbody = document.getElementById('isi-tabel'); //"isi-tabel" bukan "isi-table"
         tbody.innerHTML = '';
 
         let hitungTotal = 0;
@@ -119,16 +121,16 @@
       };
 
       // lempar ke python pastinya pake fetch
-      fetch('htpp://127.0.0.1:5000/api/pesanan', {
+      fetch('http://127.0.0.1:5000/api/pesanan', {
         method: 'POST',
         headers: { 'Content-type': 'application/json'},
-        bpdy: JSON.stringify(payload)
+        body: JSON.stringify(payload) //disini juga cuk harusnya "body" => "bpdi"
       })
       .then(response => response.json())
       .then(data => {
         if(data.status === "sukses") {
           // ubah page pelanggan
-          localStorage.setitem('statusPembayaran', 'Lunas');
+          localStorage.setItem('statusPembayaran', 'Lunas'); //harusnya "setItem" => "setitem"
           alert("Pesanan Cash Berhasil Masuk Database!");
           window.location.reload();
         } else {
