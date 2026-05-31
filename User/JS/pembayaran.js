@@ -125,8 +125,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Logika saat tombol konfirmasi ditekan
         btnKonfirmasi.addEventListener('click', () => {
-            const method = selectBayar.value;
+            // Validasi nama pelanggan
+            const inputNama = document.getElementById('nama-pelanggan');
+            const errorNama = document.getElementById('error-nama');
+            const nama = inputNama.value.trim();
+            // logika nama
+            if (nama === "") {
+                errorNama.textContent = "Nama panggilan wajib diisi!";
+                errorNama.style.display = "block";
+                inputNama.focus();
+                return;
+            }
+            // logic simbol dan angka
+            const regexHanyaHuruf = /^[a-zA-Z\s]+$/;
+            if (!regexHanyaHuruf.test(nama)) {
+                errorNama.textcontent = "Nama hanya boleh berisi huruf (tanpa simbol!)";
+                errorNama.style.display = "block";
+                inputNama.focus();
+                return;
+            }
+            
+            // cek kata tak pantas (Profanity Filter)
+            const daftarKataKotor = [
+                "bodoh","bangsat","tolol","anjing","bajingan","bego","pea","puki","pukimai","telaso","asu","pantek","dongo",
+                "kontol", "peler","titit","tete","payudara","memek"
+            ]
+            const namaKecil = nama.toLowerCase();
+            
+            // Mengecek nama apakah mengandung kata kotor
+            const mengandungKataKotor = daftarKataKotor.some(kata => namaKecil.includes(kata));
+            
+            if (mengandungKataKotor) {
+                errorNama.textContent = "Gunakan kata-kata yang pantas!";
+                errorNama.style.display = "block";
+                inputNama.focus();
+                return;
+            }
+            
+            // Sembunyikan error jika lolos semua dan simpan nama
+            errorNama.display = "none";
+            localStorage.setItem('namaPelanggan', nama);
+            // Validasi pelanggan end
+
+
             // Kuncian 2 dropdown
+            const method = selectBayar.value;
             if (tipePesanan === 'Jadwal' && method === 'Cash') {
                 alert("Pesanan Jadwal wajib menggunakan metode non-cash!");
                 opsiQR.selected = true;
@@ -136,13 +179,15 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('metodePembayaran', method);
             // Kunci tombol dropdown dan sembunyikan tombol konfirmasi utama
             selectBayar.disabled = true;
+            inputNama.disabled = true;
             btnKonfirmasi.style.display = "none";
 
             if (method === "Cash") {
                 cashSection.style.display = "block";
                 // Generate qr untuk kasir
                 qrContainer.innerHTML = "";
-                const orderData = {tipe: tipePesanan, total: totalBayar, items: cart};
+                const orderData = {tipe: tipePesanan, nama: nama, total: totalBayar, items: cart};
+
                 new QRCode(qrContainer, {
                     text: JSON.stringify(orderData),
                     width: 150, height: 150, 

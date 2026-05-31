@@ -20,7 +20,7 @@
         // tampilkan info
         document.getElementById('info-pesanan').innerHTML = `
           Status: <span style="color: #2e7d32; font-weight: bold;">Berhasil!!</span>
-          (Tipe: ${dataPesanan.tipe})
+          Nama : <strong>${dataPesanan.nama}</strong>(Tipe: ${dataPesanan.tipe})
         `;
 
         // cetak isi table
