@@ -1,7 +1,25 @@
 // Insialisasi scanner kamera
  document.addEventListener('DOMContentLoaded', () => {
+
+  let totalTagihanScanned = 0;
+    let dataPesananScanned = null;
+    // fungsi baru: total transaksi hari ini, ngmabilnya python
+    function muatTransaksiHariIni() {
+      fetch('http://127.0.0.1:5000/api/transaksi/hari-ini')
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === "sukses") {
+          const infoMenu = document.getElementById('info-hari-ini');
+          infoMenu.innerHTML = `Hari ini: ${data.jumlah} Pesanan | Rp ${data.pendapatan.toLocaleString('id-ID')}`;
+        }
+      })
+      .catch(err => console.error("Gagal memuat total transaksi:", err))
+    }
+
+    // call fungsinya ketika halam pertama kali dibuka
+    muatTransaksiHariIni();
+
     
-    let totalTagihanScanned = 0;
     const html5QrcodeScanner = new Html5QrcodeScanner(
       "reader",
       { fps: 10, qrbox: {width: 250, height: 250}},
@@ -88,11 +106,41 @@
 
     // proses penyelesaian
     btnProses.addEventListener('click', () => {
-      // set lunas agar pindah halaman
-      localStorage.setItem('statusPembayaran', 'Lunas');
-      alert("Pesanan berhasil diproses, kembali ke halaman awal");
+      // matikan tombol sementara
+      btnProses.disabled = true;
+      btnProses.textContent = "Menyimpan ke Database...";
 
-      // refresh siste,
-      window.location.reload();
+      // preparation data
+      const payload = {
+        nama: dataPesananScanned.nama || "Walk-In",
+        tipe: dataPesananScanned.tipe,
+        items: dataPesananScanned.items,
+        total: totalTagihanScanned
+      };
+
+      // lempar ke python pastinya pake fetch
+      fetch('htpp://127.0.0.1:5000/api/pesanan', {
+        method: 'POST',
+        headers: { 'Content-type': 'application/json'},
+        bpdy: JSON.stringify(payload)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if(data.status === "sukses") {
+          // ubah page pelanggan
+          localStorage.setitem('statusPembayaran', 'Lunas');
+          alert("Pesanan Cash Berhasil Masuk Database!");
+          window.location.reload();
+        } else {
+          alert("Gagal: " + data.pesan);
+          btnProses.disabled = false;
+          btnProses.textcontent = "Selesaikan pesanan";
+        }
+      })
+      .catch(error => {
+        alert("Error: Server belum menyala !!")
+        btnProses.disabled = false;
+        btnProses.textContent = "Selesaikan Pesanan"
+      })
     });
  });
