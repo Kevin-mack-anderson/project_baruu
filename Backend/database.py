@@ -51,15 +51,14 @@ def get_antrean_sjf():
       cursor.execute('''
             SELECT * FROM riwayat_transaksi
             WHERE status = 'Selesai/Lunas'
-            ORDER BY estimasi_waktu ASC, waktu_dibuat ASC
       ''')
 
       hasil = cursor.fetchall()
       conn.close()
 
       # wrap kedalam bentuk list
-      antrean = [dict(row) for row in hasil]
-      return antrean
+      antrean_mentah = [dict(row) for row in hasil]
+      return antrean_mentah
 # antrean end
 
 # fungsi totalan hari ini
