@@ -15,16 +15,20 @@
       })
       .catch(err => console.error("Gagal memuat total transaksi:", err))
     }
+    // fungsi total transaksi hari ini end //
+
 
     // call fungsinya ketika halam pertama kali dibuka
     muatTransaksiHariIni();
-
+    //      
     
+    //untuk setting scanner
     const html5QrcodeScanner = new Html5QrcodeScanner(
       "reader",
       { fps: 10, qrbox: {width: 250, height: 250}},
       false
     );
+    //
     
     // Fungsi ketika qr berhasil terbaca
     function onScanSuccess(decodeText, decodeResult) {
@@ -63,25 +67,26 @@
           `;
           tbody.appendChild(tr);
         }
-
+        
         // hitung pajak
         const pajak = hitungTotal * 0.11;
         // simpan ke variabel kalkulator utama
         totalTagihanScanned = hitungTotal + pajak;
         // masukan total tagihan kedalam kalkulator
-       document.getElementById('total-tagihan').textContent = `Rp ${totalTagihanScanned.toLocaleString('id-ID')}`;
+        document.getElementById('total-tagihan').textContent = `Rp ${totalTagihanScanned.toLocaleString('id-ID')}`;
         // aktifkan kolom input uang
        const inputUang = document.getElementById('uang-diterima');
-        inputUang.disabled = false;
-        inputUang.focus();
-
+       inputUang.disabled = false;
+       inputUang.focus();
+       
       } catch(error) {
         alert("QR Code tidak dikenali atau bukan dari aplikasi pelanggan!!");
         html5QrcodeScanner.resume();
       }
     }
-
-
+    // fungsi scanner end //
+    
+    
     // nyalakan kamera
     html5QrcodeScanner.render(onScanSuccess);
     // kalkulator uang kembalian
