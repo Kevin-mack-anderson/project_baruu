@@ -77,9 +77,6 @@ def total_hari_ini():
               "pesan": str(e)
         }), 400
       
-if __name__ == '__main__':
-     app.run(debug=True, port=5000)
-
 # API untuk melihat antrian
 @app.route('/api/antrean/sjf', methods=['GET'])
 def antrean_sjd():
@@ -95,3 +92,7 @@ def antrean_sjd():
      except Exception as e:
       print(f"TERJADI ERROR SJF:  {e}")
       return jsonify({"status": "error", "pesan": str(e)}), 400
+     
+     
+if __name__ == '__main__':
+     app.run(debug=True, port=5000)

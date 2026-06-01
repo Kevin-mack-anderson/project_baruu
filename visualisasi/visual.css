@@ -1,0 +1,59 @@
+body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f1ea;
+            padding: 20px;
+            color: #4a3c31;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .queue-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        /* Desain Kartu Pesanan */
+        .card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 6px solid #2e7d32; /* Garis hijau di kiri */
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        .time-badge {
+            background: #ffe0b2;
+            color: #ef6c00;
+            padding: 6px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .menu-list {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .btn-selesai {
+            margin-top: 15px;
+            padding: 8px 15px;
+            background-color: #4a3c31;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+        }
+        .btn-selesai:hover {
+            background-color: #2e7d32;
+        }
