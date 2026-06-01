@@ -79,3 +79,19 @@ def total_hari_ini():
       
 if __name__ == '__main__':
      app.run(debug=True, port=5000)
+
+# API untuk melihat antrian
+@app.route('/api/antrean/sjf', methods=['GET'])
+def antrean_sjd():
+     try:
+            #     call fungsi logika sorting greedy/sjf
+            data_antrean = database.get_antrean_sjf()
+
+            return jsonify({
+                  "status": "sukses",
+                  "total_antrean": len(data_antrean),
+                  "data": data_antrean
+            }), 200
+     except Exception as e:
+      print(f"TERJADI ERROR SJF:  {e}")
+      return jsonify({"status": "error", "pesan": str(e)}), 400

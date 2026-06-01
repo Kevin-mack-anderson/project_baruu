@@ -39,6 +39,29 @@ def simpan_transaksi(nama, tipe, detail, total, estimasi_waktu, status='Selesai/
       conn.commit()
       conn.close()
 
+# fungsi Antrean
+def get_antrean_sjf():
+      """Mengambil pesanan yang belum dibuat dengan mengurutkan menggunakan SJF"""
+      conn = sqlite3.connect(DB_NAME)
+      # agar bentuknya rapih seperti dict
+      conn.row_factory = sqlite3.Row
+      cursor = conn.cursor()
+
+      # Logic sjf
+      cursor.execute('''
+            SELECT * FROM riwayat_transaksi
+            WHERE status = 'Selesai/Lunas'
+            ORDER BY estimasi_waktu ASC, waktu_dibuat ASC
+      ''')
+
+      hasil = cursor.fetchall()
+      conn.close()
+
+      # wrap kedalam bentuk list
+      antrean = [dict(row) for row in hasil]
+      return antrean
+# antrean end
+
 # fungsi totalan hari ini
 def hitung_hari_ini():
       """fungsi untuk menghitung jumlah transaksi dan pendapatan hari ini"""
