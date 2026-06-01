@@ -24,7 +24,7 @@ function muatAntreanSJF() {
 
 function cetakKartuAntrean(antrean) {
     const container = document.getElementById('queue-container');
-    container.innerHTML = ''; // Kosongkan layar pesan "Memuat..."
+    container.innerHTML = ''; // Kosongkan layar pesan 
 
     if (antrean.length === 0) {
         container.innerHTML = '<p style="text-align: center; color: gray;">Belum ada pesanan masuk.</p>';
@@ -33,7 +33,7 @@ function cetakKartuAntrean(antrean) {
 
     // Looping data yang sudah diurutkan (Sorted) oleh Python
     antrean.forEach((pesanan, index) => {
-        // Ingat, detail_menu di database masih berbentuk teks JSON, kita harus kembalikan ke objek JS
+        // detail_menu di database masih berbentuk teks JSON, kita harus kembalikan ke objek JS
         const detailMenu = JSON.parse(pesanan.detail_menu);
         
         // Racik list (ul) menu apa saja yang dipesan
@@ -70,7 +70,25 @@ function cetakKartuAntrean(antrean) {
     });
 }
 
-// Fungsi dummy untuk tombol selesai (Bisa dikembangkan nanti)
+// Fungsi dummy untuk tombol selesai 
 function tandaiSelesai(id_transaksi) {
-    alert("Nantinya tombol ini akan menyuruh Python untuk menghapus Pesanan ID: " + id_transaksi + " dari layar Barista!");
+    // tambahkan konfirmasi
+    const yakin = confirm(`Yakin pesanan #${id_transaksi} sudah selesai dibuat?`);
+    if (!yakin) return;
+    // tembak api pakai PUT
+    fetch(`http://127.0.0.1:5000/api/pesanan/${id_transaksi}/selesai`, {
+        method: 'PUT'
+    }) 
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "sukses") {
+            muatAntreanSJF();
+        } else {
+            alert("GAGAL MENYELESAIKAN PESANAN: ", data.pesan);
+        }
+    })
+    .catch(error => {
+        console.error("Gagal menghubungi server:", error);
+        alert("Gagal terhubung ke server Python")
+    });
 }

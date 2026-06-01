@@ -18,6 +18,7 @@ def init_db():
               detail_menu TEXT NOT NULL,
               total_harga INTEGER NOT NULL,
               estimasi_waktu INTEGER NOT NULL,
+              waktu_ambil DATETIME, --TAMBAHAN RUANG BARU
               waktu_dibuat DATETIME DEFAULT CURRENT_TIMESTAMP,     
               status TEXT NOT NULL          
           )
@@ -28,14 +29,14 @@ def init_db():
       print("Database SQLite 'kopi.db' dan table berhasil disiapkan")
 
 # fungsi simpan transaksi
-def simpan_transaksi(nama, tipe, detail, total, estimasi_waktu, status='Selesai/Lunas'):
+def simpan_transaksi(nama, tipe, detail, total, estimasi_waktu, waktu_ambil, status='Selesai/Lunas'):
       """fungsi menyimpan datapesanan baru ke table"""
       conn = sqlite3.connect(DB_NAME)
       cursor = conn.cursor()
       cursor.execute('''
-        INSERT INTO riwayat_transaksi (nama_pelanggan, tipe_pesanan, detail_menu, total_harga, estimasi_waktu, status)
-        VALUES (?, ?, ?, ?, ?, ?)
-      ''', (nama, tipe, detail, total, estimasi_waktu, status)) ##inget, tutup kurungnya ada dua, tadi error disini
+        INSERT INTO riwayat_transaksi (nama_pelanggan, tipe_pesanan, detail_menu, total_harga, estimasi_waktu, waktu_ambil, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      ''', (nama, tipe, detail, total, estimasi_waktu, waktu_ambil, status)) ##inget, tutup kurungnya ada dua, tadi error disini
       conn.commit()
       conn.close()
 
@@ -60,6 +61,22 @@ def get_antrean_sjf():
       antrean_mentah = [dict(row) for row in hasil]
       return antrean_mentah
 # antrean end
+
+# Update status selesai di visual
+def update_status_selesai(id_transaksi):
+      """"Mengubah status pesanan menjadi selesai agar hilang di visual"""
+      conn = sqlite3.connect(DB_NAME)
+      cursor = conn.cursor()
+
+      # perintah update
+      cursor.execute('''
+            UPDATE riwayat_transaksi
+            SET status = 'Pesanan Selesai'
+            WHERE id_transaksi = ?
+      ''', (id_transaksi,))
+      conn.commit()
+      conn.close
+# Visual selesai
 
 # fungsi totalan hari ini
 def hitung_hari_ini():

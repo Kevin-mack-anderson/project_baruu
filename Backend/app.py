@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import json
 import database
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 CORS(app)
@@ -41,17 +42,19 @@ def home():
 def simpan_pesanan():
       try:
             data = request.json
-
+            ## DATA JSON YANG ADA DI JS
             nama = data.get('nama', 'Tanpa Nama')
             tipe = data.get('tipe')
             items = data.get('items')
             detail = json.dumps(data.get('items'))
             total = data.get('total')
+            waktu_ambil = data.get('waktu_ambil') ##Catch data jadwal
 
+            ##SETELAH DIAMBIL, PYTHON MENGECEK KE KAMUS SEBAGAI SJF TAHAP AWAL
             estimasi = hitung_estimasi_waktu(items)
 
             # call fungsi simpan_transaksi from db
-            database.simpan_transaksi(nama, tipe, detail, total, estimasi)
+            database.simpan_transaksi(nama, tipe, detail, total, estimasi, waktu_ambil)
             return jsonify({
                   "status": "sukses",
                   "pesan": f"Pesanan berhasil masuk database! dengan estimasi : ${estimasi} menit"
@@ -84,21 +87,50 @@ def antrean_sjf():
             #     call fungsi logika sorting greedy/sjf
             data_antrean = database.get_antrean_sjf()
 
+            antrean_aktif = []
+            waktu_sekarang = datetime.now()
+
+            # Logic filtering start
+            for pesanan in data_antrean:
+                 if pesanan['tipe_pesanan'] == 'Jadwal' and pesanan['waktu_ambil']:
+                    waktu_ambil_obj = datetime.strptime(pesanan['waktu_ambil'], "%Y-%m-%d %H:%M")
+
+                        #   Syarat: tampilkan jika  waktu sudah masuk batas 15 menit
+                    batas_mulai_dibuat = waktu_ambil_obj - timedelta(minutes=15)
+
+                    if waktu_sekarang >= batas_mulai_dibuat:
+                         antrean_aktif.append(pesanan)
+                 else:
+                        #     Walk-in dan ojol langsung masuk
+                        antrean_aktif.append(pesanan)
             # Eksekusi SJF
             # dengan lambda sebagai kriteria greedy nya
             # urutkan list berdasarkan 'estimasi_waktu'
             # jika waktunya sama maka urutkan dari siapa yang order trlebih dahulu
-            data_antrean.sort(key=lambda pesanan: (pesanan['estimasi_waktu'], pesanan['id_transaksi']))
+            antrean_aktif.sort(key=lambda pesanan: (pesanan['estimasi_waktu'], pesanan['id_transaksi']))
 
             return jsonify({
                   "status": "sukses",
-                  "total_antrean": len(data_antrean),
-                  "data": data_antrean
+                  "total_antrean": len(antrean_aktif),
+                  "data": antrean_aktif
             }), 200
      except Exception as e:
       print(f"TERJADI ERROR SJF:  {e}")
       return jsonify({"status": "error", "pesan": str(e)}), 400
-     
+
+# API Penyelesaian pesanan
+@app.route('/api/pesanan/<int:id_transaksi>/selesai', methods=['PUT'])
+def selesaikan_pesanan_barista(id_transaksi):
+      try:
+            database.update_status_selesai(id_transaksi)
+
+            return jsonify({
+                  "status": "sukses",
+                  "pesan": f"Pesanan #{id_transaksi} berhasil diselesaikan!"
+            }), 200
+      except Exception as e:
+            print(f"TERJADI ERROR UPDATE: {e}")
+            return jsonify({"status": "error", "pesan": str(e)}), 400     
      
 if __name__ == '__main__':
      app.run(debug=True, port=5000)
