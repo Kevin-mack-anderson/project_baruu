@@ -252,11 +252,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // siapkan payload data
             const namaPanggilan = localStorage.getItem('namaPelanggan') || "Tanpa Nama";
+            const waktuJadwal = localStorage.getItem('waktuJadwal') || null;
             const payloadQR = {
                 nama: namaPanggilan,
                 tipe: tipePesanan,
                 items: cart,
-                total: totalBayar
+                total: totalBayar,
+                waktu_ambil: waktuJadwal
             };
 
             // send ke backend
