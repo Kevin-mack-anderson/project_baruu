@@ -79,10 +79,16 @@ def total_hari_ini():
       
 # API untuk melihat antrian
 @app.route('/api/antrean/sjf', methods=['GET'])
-def antrean_sjd():
+def antrean_sjf():
      try:
             #     call fungsi logika sorting greedy/sjf
             data_antrean = database.get_antrean_sjf()
+
+            # Eksekusi SJF
+            # dengan lambda sebagai kriteria greedy nya
+            # urutkan list berdasarkan 'estimasi_waktu'
+            # jika waktunya sama maka urutkan dari siapa yang order trlebih dahulu
+            data_antrean.sort(key=lambda pesanan: (pesanan['estimasi_waktu'], pesanan['id_transaksi']))
 
             return jsonify({
                   "status": "sukses",
