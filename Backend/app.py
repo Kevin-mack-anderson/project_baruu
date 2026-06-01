@@ -3,7 +3,7 @@ from flask_cors import CORS
 import json
 import database
 from datetime import datetime, timedelta
-
+from datetime import datetime
 app = Flask(__name__)
 CORS(app)
 
@@ -93,21 +93,48 @@ def antrean_sjf():
             # Logic filtering start
             for pesanan in data_antrean:
                  if pesanan['tipe_pesanan'] == 'Jadwal' and pesanan['waktu_ambil']:
+                   try:
+                        # input jam html diganbungkan dengan tanggal hari ini
+                    jam_ambil = datetime.strptime(pesanan['waktu_ambil'], "%H:%M").time()    
                     waktu_ambil_obj = datetime.strptime(pesanan['waktu_ambil'], "%Y-%m-%d %H:%M")
 
                         #   Syarat: tampilkan jika  waktu sudah masuk batas 15 menit
-                    batas_mulai_dibuat = waktu_ambil_obj - timedelta(minutes=15)
+                    batas_mulai = waktu_ambil_obj - timedelta(minutes=15)
 
-                    if waktu_sekarang >= batas_mulai_dibuat:
+                    if waktu_sekarang >= batas_mulai:
                          antrean_aktif.append(pesanan)
+                   except Exception as e:
+                        print(f"Error format jadwal {e}")
+                        antrean_aktif.append(pesanan) ##jika gagal, paksa masuk antrian
                  else:
                         #     Walk-in dan ojol langsung masuk
                         antrean_aktif.append(pesanan)
+            
+            # LOGIKA AGGING (Penuaan)
+            for pesanan in antrean_aktif:
+                  # tarik data mentah
+                  waktu_mentah = pesanan['waktu_dibuat']
+                  print(f"DEBUG BENTUK WAKTU: {waktu_mentah}")
+                  try:
+                        # menggambil 19 karakter saja dari db
+                        waktu_bersih = str(waktu_mentah)[:19]
+                        waktu_dibuat_obj = datetime.strptime(waktu_bersih, "%Y-%m-%d %H:%M:%S")
+                  except Exception as e:
+                        print(f"GAGAL BACA WAKTU: {e}")
+                        waktu_dibuat_obj = waktu_sekarang
+
+                  # hitung selisih waktu
+                  selisih = waktu_sekarang - waktu_dibuat_obj
+                  detik_menunggu = int(selisih.total_seconds())
+
+                  # ubah batasnya jika >30 detik naikan prioritasnya
+                  print(f"Pesanan #{pesanan['id_transaksi']} - {pesanan['nama_pelanggan']} sudah menunggu: {detik_menunggu} detik")
+                  pesanan['tingkat_prioritas'] = 0 if detik_menunggu >= 30 else 1
             # Eksekusi SJF
             # dengan lambda sebagai kriteria greedy nya
             # urutkan list berdasarkan 'estimasi_waktu'
             # jika waktunya sama maka urutkan dari siapa yang order trlebih dahulu
-            antrean_aktif.sort(key=lambda pesanan: (pesanan['estimasi_waktu'], pesanan['id_transaksi']))
+            antrean_aktif.sort(key=lambda p: (p['tingkat_prioritas'], p['estimasi_waktu'], p['id_transaksi']))
 
             return jsonify({
                   "status": "sukses",
