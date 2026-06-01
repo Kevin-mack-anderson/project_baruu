@@ -42,7 +42,7 @@ def home():
 def simpan_pesanan():
       try:
             data = request.json
-
+            ## DATA JSON YANG ADA DI JS
             nama = data.get('nama', 'Tanpa Nama')
             tipe = data.get('tipe')
             items = data.get('items')
@@ -50,6 +50,7 @@ def simpan_pesanan():
             total = data.get('total')
             waktu_ambil = data.get('waktu_ambil') ##Catch data jadwal
 
+            ##SETELAH DIAMBIL, PYTHON MENGECEK KE KAMUS SEBAGAI SJF TAHAP AWAL
             estimasi = hitung_estimasi_waktu(items)
 
             # call fungsi simpan_transaksi from db
@@ -116,7 +117,20 @@ def antrean_sjf():
      except Exception as e:
       print(f"TERJADI ERROR SJF:  {e}")
       return jsonify({"status": "error", "pesan": str(e)}), 400
-     
+
+# API Penyelesaian pesanan
+@app.route('/api/pesanan/<int:id_transaksi>/selesai', methods=['PUT'])
+def selesaikan_pesanan_barista(id_transaksi):
+      try:
+            database.update_status_selesai(id_transaksi)
+
+            return jsonify({
+                  "status": "sukses",
+                  "pesan": f"Pesanan #{id_transaksi} berhasil diselesaikan!"
+            }), 200
+      except Exception as e:
+            print(f"TERJADI ERROR UPDATE: {e}")
+            return jsonify({"status": "error", "pesan": str(e)}), 400     
      
 if __name__ == '__main__':
      app.run(debug=True, port=5000)

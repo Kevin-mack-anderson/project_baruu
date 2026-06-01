@@ -62,6 +62,22 @@ def get_antrean_sjf():
       return antrean_mentah
 # antrean end
 
+# Update status selesai di visual
+def update_status_selesai(id_transaksi):
+      """"Mengubah status pesanan menjadi selesai agar hilang di visual"""
+      conn = sqlite3.connect(DB_NAME)
+      cursor = conn.cursor()
+
+      # perintah update
+      cursor.execute('''
+            UPDATE riwayat_transaksi
+            SET status = 'Pesanan Selesai'
+            WHERE id_transaksi = ?
+      ''', (id_transaksi,))
+      conn.commit()
+      conn.close
+# Visual selesai
+
 # fungsi totalan hari ini
 def hitung_hari_ini():
       """fungsi untuk menghitung jumlah transaksi dan pendapatan hari ini"""
