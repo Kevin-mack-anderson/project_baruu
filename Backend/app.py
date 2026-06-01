@@ -9,6 +9,29 @@ CORS(app)
 # run cek table
 database.init_db()
 
+# data wkatu pesanan
+KAMUS_WAKTU = {
+     "Air Putih": 1,
+     "Kopi Aren": 3,
+     "Kopi Susu": 3,
+     "Matcha Latte": 4,
+     "Blue Lagon": 3,
+     "Kentang Goreng": 6,
+     "Roti Bakar": 5,
+     "Mie Goreng": 8
+}
+
+# hitung estimasi
+def hitung_estimasi_waktu(items):
+     """untunk mengalikan qty dengan waktu"""
+     total_waktu = 0
+     for nama_menu, detail in items.items():
+          qty = detail['qty']
+      #     serch time di kamus
+          waktu_per_item = KAMUS_WAKTU.get(nama_menu, 3)
+          total_waktu += (waktu_per_item * qty)
+          return total_waktu
+
 #         API ROUTE
 @app.route('/', methods=['GET'])
 def home():
@@ -21,14 +44,17 @@ def simpan_pesanan():
 
             nama = data.get('nama', 'Tanpa Nama')
             tipe = data.get('tipe')
+            items = data.get('items')
             detail = json.dumps(data.get('items'))
             total = data.get('total')
 
+            estimasi = hitung_estimasi_waktu(items)
+
             # call fungsi simpan_transaksi from db
-            database.simpan_transaksi(nama, tipe, detail, total)
+            database.simpan_transaksi(nama, tipe, detail, total, estimasi)
             return jsonify({
                   "status": "sukses",
-                  "pesan": "Pesanan berhasil masuk database!"
+                  "pesan": f"Pesanan berhasil masuk database! dengan estimasi : ${estimasi} menit"
             })
       except Exception as e:
             return jsonify({"status": "error", "pesan": str(e)}), 400

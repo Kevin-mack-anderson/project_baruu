@@ -1,7 +1,7 @@
 import sqlite3
 
 # nama file Db
-DB_NAME = 'kopi.db'
+DB_NAME = 'kopi_v2.db'
 
 def init_db():
       """fungsi ini akan membuat database dan table jika belum ada"""
@@ -17,6 +17,7 @@ def init_db():
               tipe_pesanan TEXT NOT NULL,
               detail_menu TEXT NOT NULL,
               total_harga INTEGER NOT NULL,
+              estimasi_waktu INTEGER NOT NULL,
               waktu_dibuat DATETIME DEFAULT CURRENT_TIMESTAMP,     
               status TEXT NOT NULL          
           )
@@ -27,14 +28,14 @@ def init_db():
       print("Database SQLite 'kopi.db' dan table berhasil disiapkan")
 
 # fungsi simpan transaksi
-def simpan_transaksi(nama, tipe, detail, total, status='Selesai/Lunas'):
+def simpan_transaksi(nama, tipe, detail, total, estimasi_waktu, status='Selesai/Lunas'):
       """fungsi menyimpan datapesanan baru ke table"""
       conn = sqlite3.connect(DB_NAME)
       cursor = conn.cursor()
       cursor.execute('''
-        INSERT INTO riwayat_transaksi (nama_pelanggan, tipe_pesanan, detail_menu, total_harga, status)
-        VALUES (?, ?, ?, ?, ?)
-      ''', (nama, tipe, detail, total, status)) ##inget, tutup kurungnya ada dua, tadi error disini
+        INSERT INTO riwayat_transaksi (nama_pelanggan, tipe_pesanan, detail_menu, total_harga, estimasi_waktu, status)
+        VALUES (?, ?, ?, ?, ?, ?)
+      ''', (nama, tipe, detail, total, estimasi_waktu, status)) ##inget, tutup kurungnya ada dua, tadi error disini
       conn.commit()
       conn.close()
 
@@ -46,7 +47,7 @@ def hitung_hari_ini():
       cursor.execute('''
         SELECT COUNT(*), SUM(total_harga)
         FROM riwayat_transaksi
-        WHERE date(waktu_dibuat) = date('now')
+        WHERE date(waktu_dibuat, 'localtime') = date('now', 'localtime')
       ''')
       hasil = cursor.fetchone()
       conn.close()
