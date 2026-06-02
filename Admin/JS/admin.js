@@ -1,5 +1,30 @@
 // Insialisasi scanner kamera
  document.addEventListener('DOMContentLoaded', () => {
+// buat suara biip di qr
+  function playBeep() {
+        // Ciptakan ruang audio di browser
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // Buat osilator (sumber gelombang suara)
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        // Atur jenis dan tinggi nada (800 Hz mirip suara scanner minimarket)
+        oscillator.type = 'sine'; 
+        oscillator.frequency.value = 800; 
+
+        // Atur volume dan durasi (0.15 detik agar terdengar renyah)
+        gainNode.gain.setValueAtTime(1, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15); 
+
+        // Mainkan suaranya!
+        oscillator.start(audioCtx.currentTime);
+        oscillator.stop(audioCtx.currentTime + 0.15);
+    }
+   
 
   let totalTagihanScanned = 0;
   let dataPesananScanned = null;
@@ -36,6 +61,7 @@
         // hentikan scanner agar tidak scan berkali-kali
         html5QrcodeScanner.pause();
 
+        playBeep();
         // ubah teks qr kembali menjadi object js
         const dataPesanan = JSON.parse(decodeText);
 
