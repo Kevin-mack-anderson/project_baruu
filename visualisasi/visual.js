@@ -54,7 +54,7 @@ function cetakKartuAntrean(antrean) {
                     <h3 style="margin: 0;">#${index + 1} - ${pesanan.nama_pelanggan}</h3>
                     <span style="color: gray; font-size: 13px;">Asal: ${pesanan.tipe_pesanan} | ID: ${pesanan.id_transaksi}</span>
                 </div>
-                <div class="time-badge">⏱️ ${pesanan.estimasi_waktu} Menit</div>
+                <div class="time-badge">⏱️ ${pesanan.estimasi_waktu} Detik</div>
             </div>
             
             <div class="card-body">

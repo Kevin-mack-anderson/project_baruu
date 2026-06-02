@@ -1,5 +1,5 @@
 import sqlite3
-
+from datetime import datetime
 # nama file Db
 DB_NAME = 'kopi_v2.db'
 
@@ -18,8 +18,8 @@ def init_db():
               detail_menu TEXT NOT NULL,
               total_harga INTEGER NOT NULL,
               estimasi_waktu INTEGER NOT NULL,
-              waktu_ambil DATETIME, --TAMBAHAN RUANG BARU
-              waktu_dibuat DATETIME DEFAULT CURRENT_TIMESTAMP,     
+              waktu_ambil DATETIME,
+              waktu_dibuat DATETIME DEFAULT (datetime('now', 'localtime')),     
               status TEXT NOT NULL          
           )
       ''')
@@ -33,6 +33,9 @@ def simpan_transaksi(nama, tipe, detail, total, estimasi_waktu, waktu_ambil, sta
       """fungsi menyimpan datapesanan baru ke table"""
       conn = sqlite3.connect(DB_NAME)
       cursor = conn.cursor()
+      
+      waktu_dibuat_python = datetime.now().strftime("%Y-%m-%d %H:%S")
+
       cursor.execute('''
         INSERT INTO riwayat_transaksi (nama_pelanggan, tipe_pesanan, detail_menu, total_harga, estimasi_waktu, waktu_ambil, status)
         VALUES (?, ?, ?, ?, ?, ?, ?)
