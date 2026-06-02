@@ -2,6 +2,12 @@ let cart = {};
 
 // Fungsi tambah ke keranjang (saat kartu di klik)
 function add(nama, harga) {
+  // cek stok
+ let stok = JSON.parse(localStorage.getItem('stokMenu')) || {};
+ if (stok[nama] === false) {
+  alert(`Maaf, menu ${nama} sedang habis!`);
+  return;
+ }
   if (cart[nama]) {
     cart[nama].qty +=1;
   } else {
@@ -157,6 +163,26 @@ function checkForm() {
 
 // Event Listerner insialisasi
 document.addEventListener('DOMContentLoaded', () => {
+//   // Visual Stok
+  let stok = JSON.parse(localStorage.getItem('stokMenu') || {});
+  const semuaKartuMenu = document.querySelectorAll('menu-card');
+
+  semuaKartuMenu.forEach(kartu => {
+    const namaMenu = kartu.querySelector('menu-info ').textContent;
+  
+    if (stok[namaMenu] === false) {
+          kartu.style.filter = 'grayscale(100%)';
+          kartu.style.opacity = '0.5';
+          kartu.style.pointerEvents = 'none';
+
+          const spanHarga = kartu.querySelector('menu-info');
+          spanHarga.textContent = 'HABIS';
+          spanHarga.style.color = '#d32f2f';
+          spanHarga.style.fontWeight = 'bold';
+      }
+});
+  
+  
   // Kunci tombol konfirmasi
   checkForm();
 

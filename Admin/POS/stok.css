@@ -1,0 +1,59 @@
+    body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f1ea; /* Warna krem senada dengan tema kopimu */
+            color: #4a3c31;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            width: 100%;
+            max-width: 400px;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f9f9f9;
+        }
+        select {
+            padding: 6px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            outline: none;
+            cursor: pointer;
+        }
+        .btn-simpan {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+        .btn-batal {
+            background-color: #8a7e74;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
