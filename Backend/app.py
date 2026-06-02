@@ -107,6 +107,10 @@ def dapatkan_antrean_terurut():
                  else:
                         antrean_aktif.append(pesanan)
             # LOGIKA AGGING (Penuaan)
+
+            pesanan_tertua = None
+            waktu_tunggu_terlama = -1
+
             for pesanan in antrean_aktif:
                   # tarik data mentah
                   waktu_mentah = pesanan['waktu_dibuat']
@@ -122,9 +126,22 @@ def dapatkan_antrean_terurut():
                   
                   selisih = waktu_sekarang - waktu_dibuat_obj
                   detik_menunggu = int(selisih.total_seconds())
+
+                  # simpan waktu tunggu\
+                  pesanan['detik_menunggu'] = detik_menunggu
+                  pesanan['tingkat_prioritas'] = 1
+
+                  # cari yang paling tua
+                  if detik_menunggu > waktu_tunggu_terlama:
+                       waktu_tunggu_terlama = detik_menunggu
+                       pesanan_tertua = pesanan
+
+            if pesanan_tertua and waktu_tunggu_terlama >= 30:
                   # ubah batasnya jika >30 detik naikan prioritasnya
+                  pesanan_tertua['tingkat_prioritas'] = 0
+
                   print(f"Pesanan #{pesanan['id_transaksi']} - {pesanan['nama_pelanggan']} sudah menunggu: {detik_menunggu} detik")
-                  pesanan['tingkat_prioritas'] = 0 if detik_menunggu >= 30 else 1
+                 
 
             # dengan lambda sebagai kriteria greedy nya
             # urutkan list berdasarkan 'estimasi_waktu'
