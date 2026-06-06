@@ -15,26 +15,16 @@ database.init_db()
 
 # data wkatu pesanan
 KAMUS_WAKTU = {
-     "Air Putih": 1,
-     "Kopi Aren": 3,
-     "Kopi Susu": 3,
-     "Matcha Latte": 4,
-     "Blue Lagon": 3,
-     "Kentang Goreng": 6,
-     "Roti Bakar": 5,
-     "Mie Goreng": 8
+     "Air Putih": 10,
+     "Kopi Aren": 13,
+     "Kopi Susu": 23,
+     "Matcha Latte": 14,
+     "Blue Lagon": 13,
+     "Kentang Goreng": 26,
+     "Roti Bakar": 15,
+     "Mie Goreng": 18
 }
 
-# hitung estimasi
-def hitung_estimasi_waktu(items):
-     """untunk mengalikan qty dengan waktu"""
-     total_waktu = 0
-     for nama_menu, detail in items.items():
-          qty = detail['qty']
-       #     serch time di kamus
-          waktu_per_item = KAMUS_WAKTU.get(nama_menu, 3)
-          total_waktu += (waktu_per_item * qty)
-     return total_waktu ##Return diluar loop for
 
 #         API ROUTE
 @app.route('/', methods=['GET'])
@@ -65,6 +55,17 @@ def simpan_pesanan():
       except Exception as e:
             return jsonify({"status": "error", "pesan": str(e)}), 400
 
+# hitung estimasi
+def hitung_estimasi_waktu(items):
+     """untunk mengalikan qty dengan waktu"""
+     total_waktu = 0
+     for nama_menu, detail in items.items(): ##DARI QR 
+          qty = detail['qty']
+       #     serch time di kamus
+          waktu_per_item = KAMUS_WAKTU.get(nama_menu, 3)
+          total_waktu += (waktu_per_item * qty)
+     return total_waktu ##Return diluar loop for
+     
 @app.route('/api/transaksi/hari-ini', methods=['GET'])
 def total_hari_ini():
       try:
@@ -95,7 +96,7 @@ def dapatkan_antrean_terurut():
                   #Logic filtering start
                    #input jam html diganbungkan dengan tanggal hari ini
                     jam_ambil = datetime.strptime(pesanan['waktu_ambil'], "%H:%M").time()    
-                    waktu_ambil_obj = datetime.strptime(pesanan['waktu_ambil'], "%Y-%m-%d %H:%M")
+                    waktu_ambil_obj = datetime.combine(waktu_sekarang.date(), jam_ambil)
                    #Syarat: tampilkan jika  waktu sudah masuk batas 15 menit
                     batas_mulai = waktu_ambil_obj - timedelta(minutes=15)
                    

@@ -191,7 +191,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 new QRCode(qrContainer, {
                     text: JSON.stringify(orderData),
                     width: 150, height: 150, 
-                    colorDark: "#4a3c31", colorLight: "#ffffff"
+                    colorDark: "#4a3c31", colorLight: "#ffffff",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.L
                 });
             } else if (method === "QR") {
                 qrSection.style.display = "block";

@@ -164,18 +164,18 @@ function checkForm() {
 // Event Listerner insialisasi
 document.addEventListener('DOMContentLoaded', () => {
 //   // Visual Stok
-  let stok = JSON.parse(localStorage.getItem('stokMenu') || {});
-  const semuaKartuMenu = document.querySelectorAll('menu-card');
+  let stok = JSON.parse(localStorage.getItem('stokMenu')) || {}; //kesalahan penulisan tutup kurung
+  const semuaKartuMenu = document.querySelectorAll('.menu-card'); //penambahan titik karna utk class
 
   semuaKartuMenu.forEach(kartu => {
-    const namaMenu = kartu.querySelector('menu-info ').textContent;
+    const namaMenu = kartu.querySelector('.menu-info b ').textContent; //ini jg kurang class (.) dan ambilnya b aja
   
     if (stok[namaMenu] === false) {
           kartu.style.filter = 'grayscale(100%)';
           kartu.style.opacity = '0.5';
           kartu.style.pointerEvents = 'none';
 
-          const spanHarga = kartu.querySelector('menu-info');
+          const spanHarga = kartu.querySelector('.menu-info span'); //ini juga tambahin class dan span
           spanHarga.textContent = 'HABIS';
           spanHarga.style.color = '#d32f2f';
           spanHarga.style.fontWeight = 'bold';
