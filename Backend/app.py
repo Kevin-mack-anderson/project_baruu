@@ -6,15 +6,19 @@ from datetime import datetime, timedelta
 from datetime import datetime
 import threading
 import time
+#////BARUU
 import pyttsx3
 import queue
 import subprocess
+#////
 
 app = Flask(__name__)
 
+#BARU///
 # antrean suara
 antrean_suara = queue.Queue()
 CORS(app)
+#///////
 
 # run cek table
 database.init_db()
@@ -157,6 +161,7 @@ def dapatkan_antrean_terurut():
             # Eksekusi SJF
             antrean_aktif.sort(key=lambda p: (p['tingkat_prioritas'], p['estimasi_waktu'], p['id_transaksi']))
             return antrean_aktif
+
 # API untuk melihat antrian
 @app.route('/api/antrean/sjf', methods=['GET'])
 def antrean_sjf():
@@ -171,7 +176,7 @@ def antrean_sjf():
       print(f"TERJADI ERROR SJF:  {e}")
       return jsonify({"status": "error", "pesan": str(e)}), 400
 
-# Fungsi Baru: Riwayat pelanggan
+# ///Fungsi Baru: Riwayat pelanggan
 @app.route('/api/riwayat', methods=['POST'])
 def riwayat_pelanggan():
     try:
@@ -216,6 +221,7 @@ def selesaikan_pesanan_barista(id_transaksi):
             # Hapus pesanan dari Db
             database.update_status_selesai(id_transaksi)
             # Masukan teks panggilan
+            #///BARU
             teks = f"Pesanan nomor: {id_transaksi}atas nama {nama_pelanggan} silahkan diambil" 
             antrean_suara.put(teks)
 
@@ -227,7 +233,7 @@ def selesaikan_pesanan_barista(id_transaksi):
           print(f"Terjadi Error Update: {e}")
           return jsonify({"status": "error", "pesan": str(e)}), 400
 
-# Fungsi Baru: Antrean siap
+# ///Fungsi Baru: Antrean siap
 @app.route('/api/pesanan/siap', methods=['GET'])
 def antrean_siap():
     return jsonify({"status": "sukses", "data": database.get_pesanan_siap_diambil()})
@@ -237,7 +243,7 @@ def antrean_siap():
 def pesanan_diambil_staff(id_transaksi):
     database.update_status_diambil(id_transaksi)
     return jsonify({"status": "sukses", "pesan": "Pesanan Selesai Sepenuhnya!"})
-
+#////////////
 
 # Thread barista#
 def pekerja_barista_virtual():
@@ -272,7 +278,7 @@ def pekerja_barista_virtual():
                print((f"Threading ERROR: {e}"))
                time.sleep(2)
 
-     
+#/////BARU?//////
 def pekerja_speaker_virtual():
     print("[SISTEM] Speaker Panggilan telah aktif di latar belakang!")
 #     pythoncom.CoInitialize()
@@ -310,6 +316,7 @@ def pekerja_pengigat_cerewet():
         except Exception as e:
             pass
         time.sleep(5) # Cek lemari makanan tiap 5 detik
+#///////////
 
 if __name__ == '__main__':
      thread_barista = threading.Thread(target=pekerja_barista_virtual, daemon=True)
@@ -318,6 +325,8 @@ if __name__ == '__main__':
      thread_speaker = threading.Thread(target=pekerja_speaker_virtual, daemon=True)
      thread_speaker.start()
 
+#/////baru
      thread_pengingat = threading.Thread(target=pekerja_pengigat_cerewet, daemon=True)
      thread_pengingat.start()
+#//////
      app.run(debug=True, port=5000, use_reloader=False)
