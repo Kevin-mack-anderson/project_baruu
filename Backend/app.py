@@ -6,9 +6,19 @@ from datetime import datetime, timedelta
 from datetime import datetime
 import threading
 import time
+#////BARUU
+import pyttsx3
+import queue
+import subprocess
+#////
 
 app = Flask(__name__)
+
+#BARU///
+# antrean suara
+antrean_suara = queue.Queue()
 CORS(app)
+#///////
 
 # run cek table
 database.init_db()
@@ -45,13 +55,14 @@ def simpan_pesanan():
 
             ##SETELAH DIAMBIL, PYTHON MENGECEK KE KAMUS SEBAGAI SJF TAHAP AWAL
             estimasi = hitung_estimasi_waktu(items)
-
+            
             # call fungsi simpan_transaksi from db
-            database.simpan_transaksi(nama, tipe, detail, total, estimasi, waktu_ambil)
+            id_baru = database.simpan_transaksi(nama, tipe, detail, total, estimasi, waktu_ambil)
             return jsonify({
                   "status": "sukses",
-                  "pesan": f"Pesanan berhasil masuk database! dengan estimasi : ${estimasi} menit"
-            })
+                  "pesan": f"Pesanan berhasil masuk database! dengan estimasi : ${estimasi} menit",
+                  "id_transaksi": id_baru            
+                  })
       except Exception as e:
             return jsonify({"status": "error", "pesan": str(e)}), 400
 
@@ -150,6 +161,7 @@ def dapatkan_antrean_terurut():
             # Eksekusi SJF
             antrean_aktif.sort(key=lambda p: (p['tingkat_prioritas'], p['estimasi_waktu'], p['id_transaksi']))
             return antrean_aktif
+
 # API untuk melihat antrian
 @app.route('/api/antrean/sjf', methods=['GET'])
 def antrean_sjf():
@@ -164,20 +176,74 @@ def antrean_sjf():
       print(f"TERJADI ERROR SJF:  {e}")
       return jsonify({"status": "error", "pesan": str(e)}), 400
 
+# ///Fungsi Baru: Riwayat pelanggan
+@app.route('/api/riwayat', methods=['POST'])
+def riwayat_pelanggan():
+    try:
+        # Menangkap Array ID dari localStorage HP Pelanggan
+        ids = request.json.get('ids', [])
+        data_riwayat = database.get_riwayat_by_ids(ids)
+        
+        return jsonify({
+            "status": "sukses", 
+            "data": data_riwayat
+        }), 200
+    except Exception as e:
+        print(f"Error Riwayat: {e}")
+        return jsonify({"status": "error", "pesan": str(e)}), 400
+    
+# API BARU: BACA DAN UBAH STOK
+@app.route('/api/stok', methods=['GET'])
+def get_stok():
+    return jsonify({"status": "sukses", "data": database.get_semua_stok()})
+
+@app.route('/api/stok', methods=['PUT'])
+def update_stok():
+    try:
+        data = request.json
+        database.update_stok_menu(data)
+        return jsonify({"status": "sukses", "pesan": "Stok berhasil diupdate di Database!"})
+    except Exception as e:
+        return jsonify({"status": "error", "pesan": str(e)}), 400
+# ////
 
 # API Penyelesaian pesanan
 @app.route('/api/pesanan/<int:id_transaksi>/selesai', methods=['PUT'])
 def selesaikan_pesanan_barista(id_transaksi):
-      try:
+     try:
+            #cari nama pelanggan sebleum dihapuss
+            antrean = dapatkan_antrean_terurut()
+            nama_pelanggan = "pelanggan"
+            for p in antrean:
+                 if p['id_transaksi'] == id_transaksi:
+                      nama_pelanggan = p['nama_pelanggan']
+                      break
+            # Hapus pesanan dari Db
             database.update_status_selesai(id_transaksi)
+            # Masukan teks panggilan
+            #///BARU
+            teks = f"Pesanan nomor: {id_transaksi}atas nama {nama_pelanggan} silahkan diambil" 
+            antrean_suara.put(teks)
 
             return jsonify({
-                  "status": "sukses",
-                  "pesan": f"Pesanan #{id_transaksi} berhasil diselesaikan!"
+                 "status": "sukses",
+                 "pesan": f"Pesanan #{id_transaksi} Berhasil Diselesaikan"
             }), 200
-      except Exception as e:
-            print(f"TERJADI ERROR UPDATE: {e}")
-            return jsonify({"status": "error", "pesan": str(e)}), 400     
+     except Exception as e:
+          print(f"Terjadi Error Update: {e}")
+          return jsonify({"status": "error", "pesan": str(e)}), 400
+
+# ///Fungsi Baru: Antrean siap
+@app.route('/api/pesanan/siap', methods=['GET'])
+def antrean_siap():
+    return jsonify({"status": "sukses", "data": database.get_pesanan_siap_diambil()})
+
+# Fungsi Baru: Konirmasi Staff
+@app.route('/api/pesanan/<int:id_transaksi>/diambil', methods=['PUT'])
+def pesanan_diambil_staff(id_transaksi):
+    database.update_status_diambil(id_transaksi)
+    return jsonify({"status": "sukses", "pesan": "Pesanan Selesai Sepenuhnya!"})
+#////////////
 
 # Thread barista#
 def pekerja_barista_virtual():
@@ -200,6 +266,10 @@ def pekerja_barista_virtual():
                   # selesaikan pesanan secara otomatis
                   database.update_status_selesai(id_transaksi)
                   print(f"[Barista] Pesanan #{id_transaksi} Selesai")
+
+                  # Kirim suara
+                  teks = f"Pesanan nomer {id_transaksi}, atas nama  {nama} silahkan diambil di meja kasir"
+                  antrean_suara.put(teks)
                   # setiap 2 detik cek pesanan
                else:
                     time.sleep(2)
@@ -207,8 +277,56 @@ def pekerja_barista_virtual():
           except Exception as e:
                print((f"Threading ERROR: {e}"))
                time.sleep(2)
-     
+
+#/////BARU?//////
+def pekerja_speaker_virtual():
+    print("[SISTEM] Speaker Panggilan telah aktif di latar belakang!")
+#     pythoncom.CoInitialize()
+    mesin_suara = pyttsx3.init()
+    # (Opsional) Mengatur kecepatan bicara agar terdengar natural
+    mesin_suara.setProperty('rate', 150) 
+    
+    while True:
+        # get() akan membuat thread ini "tertidur" sampai ada teks masuk di pipa
+        teks = antrean_suara.get() 
+        if teks:
+            print(f"[SPEAKER] Memanggil: {teks}")
+            try:
+                 script_suara = f"import pyttsx3; import sys; mesin = pyttsx3.init(); mesin.setProperty('rate', 150); mesin.say('{teks}'); mesin.runAndWait()"
+
+                 subprocess.run(["python", "-c", script_suara, teks])
+            except Exception as e:
+                 print(f"Error Suara {e}")
+waktu_terakhir_dipanggil = {}
+
+# Fungsi Baru: Untuk cek lama waktu pesanan belum diambil
+def pekerja_pengigat_cerewet():
+     print("[SISTEM] Satpam Pengingat Makanan AKTIF!")
+     while True:
+        try:
+            pesanan_siap = database.get_pesanan_siap_diambil()
+            sekarang = time.time()
+            for p in pesanan_siap:
+                pid, nama = p['id_transaksi'], p['nama_pelanggan']
+                # Panggil jika belum pernah dipanggil, ATAU sudah lewat 30 detik dari panggilan terakhir
+                if pid not in waktu_terakhir_dipanggil or (sekarang - waktu_terakhir_dipanggil[pid]) >= 100:
+                    teks = f"Panggilan. Pesanan nomor {pid}, atas nama {nama}, silakan segera diambil di meja penyerahan."
+                    antrean_suara.put(teks)
+                    waktu_terakhir_dipanggil[pid] = sekarang
+        except Exception as e:
+            pass
+        time.sleep(5) # Cek lemari makanan tiap 5 detik
+#///////////
+
 if __name__ == '__main__':
      thread_barista = threading.Thread(target=pekerja_barista_virtual, daemon=True)
      thread_barista.start()
+
+     thread_speaker = threading.Thread(target=pekerja_speaker_virtual, daemon=True)
+     thread_speaker.start()
+
+#/////baru
+     thread_pengingat = threading.Thread(target=pekerja_pengigat_cerewet, daemon=True)
+     thread_pengingat.start()
+#//////
      app.run(debug=True, port=5000, use_reloader=False)
