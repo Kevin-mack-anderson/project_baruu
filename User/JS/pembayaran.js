@@ -283,6 +283,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(data.status === "sukses") {
                     alert("terimakasih! Pembayaran Qr Berhasil Masuk!")
                     // give kunci lunas
+                    let riwayat = JSON.parse(localStorage.getItem('riwayatPesananKu')) || [];
+                    if (data.id_transaksi) {
+                        riwayat.push(data.id_transaksi);
+                        localStorage.setItem('riwayatPesananKu', JSON.stringify(riwayat));
+                    }
                     localStorage.setItem('statusPembayaran', 'Lunas');
                     // pindah ke detail pesanan
                     window.location.href = "../Detail_pesanan/detail.html";

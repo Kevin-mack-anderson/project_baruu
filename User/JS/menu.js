@@ -1,10 +1,12 @@
 let cart = {};
+// NEWW
+stokGlobal = {};
+///
 
 // Fungsi tambah ke keranjang (saat kartu di klik)
 function add(nama, harga) {
   // cek stok
- let stok = JSON.parse(localStorage.getItem('stokMenu')) || {};
- if (stok[nama] === false) {
+ if (stokGlobal[nama] === false) {
   alert(`Maaf, menu ${nama} sedang habis!`);
   return;
  }
@@ -163,25 +165,38 @@ function checkForm() {
 
 // Event Listerner insialisasi
 document.addEventListener('DOMContentLoaded', () => {
-//   // Visual Stok
-  let stok = JSON.parse(localStorage.getItem('stokMenu')) || {}; //kesalahan penulisan tutup kurung
-  const semuaKartuMenu = document.querySelectorAll('.menu-card'); //penambahan titik karna utk class
+//NEWWWW
+  // --- TARIK STOK DARI DATABASE PYTHON ---
+  fetch('http://127.0.0.1:5000/api/stok')
+  .then(res => res.json())
+  .then(data => {
+      if (data.status === 'sukses') {
+          stokGlobal = data.data; // Masukkan ke memori global
+          const semuaKartuMenu = document.querySelectorAll('.menu-card');
 
-  semuaKartuMenu.forEach(kartu => {
-    const namaMenu = kartu.querySelector('.menu-info b ').textContent; //ini jg kurang class (.) dan ambilnya b aja
-  
-    if (stok[namaMenu] === false) {
-          kartu.style.filter = 'grayscale(100%)';
-          kartu.style.opacity = '0.5';
-          kartu.style.pointerEvents = 'none';
+          semuaKartuMenu.forEach(kartu => {
+              const elemenNama = kartu.querySelector('.menu-info b');
+              if (elemenNama) {
+                  const namaMenu = elemenNama.textContent;
+                  
+                  // Jika di database statusnya Habis (false)
+                  if (stokGlobal[namaMenu] === false) {
+                      kartu.style.filter = 'grayscale(100%)';
+                      kartu.style.opacity = '0.5';
+                      kartu.style.pointerEvents = 'none';
 
-          const spanHarga = kartu.querySelector('.menu-info span'); //ini juga tambahin class dan span
-          spanHarga.textContent = 'HABIS';
-          spanHarga.style.color = '#d32f2f';
-          spanHarga.style.fontWeight = 'bold';
+                      const spanHarga = kartu.querySelector('.menu-info span');
+                      if (spanHarga) {
+                          spanHarga.textContent = 'HABIS';
+                          spanHarga.style.color = '#d32f2f';
+                          spanHarga.style.fontWeight = 'bold';
+                      }
+                  }
+              }
+          });
       }
-});
-  
+  });
+  // /////////
   
   // Kunci tombol konfirmasi
   checkForm();

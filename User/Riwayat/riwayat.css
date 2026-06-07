@@ -1,0 +1,31 @@
+  body { 
+    font-family: Arial, sans-serif; 
+    background: #f4f1ea; 
+    padding: 20px; 
+    color: #4a3c31; 
+  }
+  .card { 
+    background: white; 
+    padding: 15px; 
+    margin-bottom: 15px; 
+    border-radius: 8px; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+  }
+  .badge { 
+    padding: 5px 10px; 
+    border-radius: 4px; 
+    font-weight: bold; 
+    font-size: 13px; 
+  }
+  .bg-proses { 
+    background: #fff3e0; 
+    color: #e65100; 
+  }
+  .bg-siap { 
+    background: #e3f2fd; 
+    color: #1565c0; 
+  }
+  .bg-selesai { 
+    background: #e8f5e9; 
+    color: #2e7d32; 
+  }

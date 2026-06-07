@@ -79,7 +79,13 @@ document.addEventListener('DOMContentLoaded', () => {
 // Fungsi selesai
 function selesaiPesanan() {
   // hapu semua memori untuk pelanggan baru
-  localStorage.clear();
+  localStorage.removeItem('dataPesananKopi');
+    localStorage.removeItem('tipePesanan');
+    localStorage.removeItem('metodePembayaran');
+    localStorage.removeItem('waktuJadwal');
+    localStorage.removeItem('namaPelanggan');
+    localStorage.removeItem('statusPembayaran');
+    localStorage.removeItem('nomorAntrean');
   // arahkan kembali ke halaman awal
   window.location.href = "../Menu/menu.html"
 }
