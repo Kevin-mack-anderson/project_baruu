@@ -1,5 +1,5 @@
 // Insialisasi scanner kamera
- document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
 // buat suara biip di qr
   function playBeep() {
         // Ciptakan ruang audio di browser
@@ -143,6 +143,9 @@
       btnProses.disabled = true;
       btnProses.textContent = "Menyimpan ke Database...";
 
+      // NEWW CEK APAKAH INI QR BARU
+      
+
       // preparation data
       const payload = {
         nama: dataPesananScanned.nama || "Walk-In",
@@ -176,4 +179,4 @@
         btnProses.textContent = "Selesaikan Pesanan"
       })
     });
- });
+});

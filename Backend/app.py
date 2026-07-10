@@ -10,6 +10,7 @@ import time
 import pyttsx3
 import queue
 import subprocess
+
 #////
 
 app = Flask(__name__)
@@ -53,11 +54,17 @@ def simpan_pesanan():
             total = data.get('total')
             waktu_ambil = data.get('waktu_ambil') ##Catch data jadwal
 
+          # NEWW UTK CASH
+            status_pesanan = data.get('status', 'Selesai/Lunas')
+          
             ##SETELAH DIAMBIL, PYTHON MENGECEK KE KAMUS SEBAGAI SJF TAHAP AWAL
             estimasi = hitung_estimasi_waktu(items)
             
             # call fungsi simpan_transaksi from db
-            id_baru = database.simpan_transaksi(nama, tipe, detail, total, estimasi, waktu_ambil)
+            id_baru = database.simpan_transaksi(nama, tipe, detail, total, estimasi, waktu_ambil, status_pesanan)
+
+            database.kurangi_sisa_stok(items)
+
             return jsonify({
                   "status": "sukses",
                   "pesan": f"Pesanan berhasil masuk database! dengan estimasi : ${estimasi} menit",
@@ -99,9 +106,14 @@ def total_hari_ini():
 def dapatkan_antrean_terurut():
             data_antrean = database.get_antrean_sjf()
             antrean_aktif = []
+            pesanan_diproses = None
             waktu_sekarang = datetime.now()
      
             for pesanan in data_antrean:
+                 if pesanan['status'] == 'Sedang Diproses':
+                    pesanan_diproses = pesanan
+                    continue
+                 
                  if pesanan['tipe_pesanan'] == 'Jadwal' and pesanan['waktu_ambil']:
                    try:
                   #Logic filtering start
@@ -147,7 +159,8 @@ def dapatkan_antrean_terurut():
                   if detik_menunggu > waktu_tunggu_terlama:
                        waktu_tunggu_terlama = detik_menunggu
                        pesanan_tertua = pesanan
-
+   
+          # AGING
             if pesanan_tertua and waktu_tunggu_terlama >= 30:
                   # ubah batasnya jika >30 detik naikan prioritasnya
                   pesanan_tertua['tingkat_prioritas'] = 0
@@ -160,6 +173,8 @@ def dapatkan_antrean_terurut():
             # jika waktunya sama maka urutkan dari siapa yang order trlebih dahulu
             # Eksekusi SJF
             antrean_aktif.sort(key=lambda p: (p['tingkat_prioritas'], p['estimasi_waktu'], p['id_transaksi']))
+            if pesanan_diproses:
+              antrean_aktif.insert(0, pesanan_diproses)
             return antrean_aktif
 
 # API untuk melihat antrian
@@ -246,6 +261,7 @@ def pesanan_diambil_staff(id_transaksi):
 #////////////
 
 # Thread barista#
+# Thread barista#
 def pekerja_barista_virtual():
      print("[SISTEM] Barista virtual siap mengeksekusi pesanan!")
      while True:
@@ -253,31 +269,36 @@ def pekerja_barista_virtual():
                antrean = dapatkan_antrean_terurut()
 
                if antrean:
-                  #   ambil pesanan pringkat 1
+                  #   ambil pesanan peringkat 1
                   pesanan_diproses = antrean[0]
                   id_transaksi = pesanan_diproses['id_transaksi']
                   waktu_proses = pesanan_diproses['estimasi_waktu']
                   nama = pesanan_diproses['nama_pelanggan']
 
+                 
+                  database.update_status_diproses(id_transaksi)
+                  
+
                   print(f"[Barista] Membuat pesanan #{id_transaksi} ({nama}). Butuh {waktu_proses} detik")
-                  #  henitkan aktivitas thread ini sementara
+                  
+                  #  hentikan thread ini sementara (fase memasak)
                   time.sleep(waktu_proses)
 
-                  # selesaikan pesanan secara otomatis
+                  # selesaikan pesanan secara otomatis setelah waktu habis
                   database.update_status_selesai(id_transaksi)
                   print(f"[Barista] Pesanan #{id_transaksi} Selesai")
 
                   # Kirim suara
-                  teks = f"Pesanan nomer {id_transaksi}, atas nama  {nama} silahkan diambil di meja kasir"
+                  teks = f"Pesanan nomor {id_transaksi}, atas nama {nama} silahkan diambil di meja kasir"
                   antrean_suara.put(teks)
-                  # setiap 2 detik cek pesanan
+                  
                else:
+                    # setiap 2 detik cek pesanan
                     time.sleep(2)
             
           except Exception as e:
-               print((f"Threading ERROR: {e}"))
+               print(f"Threading ERROR: {e}")
                time.sleep(2)
-
 #/////BARU?//////
 def pekerja_speaker_virtual():
     print("[SISTEM] Speaker Panggilan telah aktif di latar belakang!")

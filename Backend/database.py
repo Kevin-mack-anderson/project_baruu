@@ -36,6 +36,12 @@ def init_db():
           )
       ''')
 
+      try:
+          cursor.execute("ALTER TABLE stok_menu ADD COLUMN kuota INTEGER NOT NULL DEFAULT 50")
+          cursor.execute("ALTER TABLE stok_menu ADD COLUMN sisa INTEGER NOT NULL DEFAULT 50")
+      except sqlite3.OperationalError:
+          pass # Abaikan jika kolom sudah pernah dibuat
+
       # isi table otomatis jika masih kosonbg
       cursor.execute("SELECT COUNT(*) FROM stok_menu")
       if cursor.fetchone()[0] == 0:
@@ -77,7 +83,7 @@ def get_antrean_sjf():
       # Logic sjf
       cursor.execute('''
             SELECT * FROM riwayat_transaksi
-            WHERE status = 'Selesai/Lunas'
+            WHERE status IN ('Selesai/Lunas', 'Sedang Diproses')
       ''')
 
       hasil = cursor.fetchall()
@@ -103,6 +109,18 @@ def update_status_selesai(id_transaksi):
       conn.commit()
       conn.close
 # Visual selesai
+
+# Fungsi untuk mengunci pesanan agar tidak digeser SJF
+def update_status_diproses(id_transaksi):
+      conn = sqlite3.connect(DB_NAME)
+      cursor = conn.cursor()
+      cursor.execute('''
+            UPDATE riwayat_transaksi
+            SET status = 'Sedang Diproses'
+            WHERE id_transaksi = ?
+      ''', (id_transaksi,))
+      conn.commit()
+      conn.close()
 
 # NEW//////
 # update status diambil
@@ -155,21 +173,33 @@ def hitung_hari_ini():
       return jumlah_transaksi, total_pendapatan
 
 # NEWW
+# NEWW
 def get_semua_stok():
       conn = sqlite3.connect(DB_NAME)
       cursor = conn.cursor()
-      cursor.execute("SELECT nama_menu, tersedia FROM stok_menu")
+      # Ambil kolom kuota dan sisa yang baru saja kita injeksi
+      cursor.execute("SELECT nama_menu, kuota, sisa FROM stok_menu")
       hasil = cursor.fetchall()
       conn.close()
-      # ubah ke bentuk dict
-      return {row[0]: bool(row[1]) for row in hasil}
+      return {row[0]: {'kuota': row[1], 'sisa': row[2]} for row in hasil}
 
 def update_stok_menu(stok_dict):
       conn = sqlite3.connect(DB_NAME)
       cursor = conn.cursor()
-      for menu, tersedia in stok_dict.items():
-            status = 1 if tersedia else 0
-            cursor.execute("UPDATE stok_menu SET tersedia = ? WHERE nama_menu = ?", (status, menu))
+      for menu, kuota in stok_dict.items():
+            # Saat Admin mengatur Kuota baru, Sisa otomatis di-reset menjadi penuh
+            cursor.execute("UPDATE stok_menu SET kuota = ?, sisa = ? WHERE nama_menu = ?", (int(kuota), int(kuota), menu))
       conn.commit()
       conn.close()
+
+# MENGURANGI STOK OTOMATIS SAAT ADA ORDER
+def kurangi_sisa_stok(keranjang_dict):
+      conn = sqlite3.connect(DB_NAME)
+      cursor = conn.cursor()
+      for menu, detail in keranjang_dict.items():
+            qty = detail['qty']
+            cursor.execute("UPDATE stok_menu SET sisa = sisa - ? WHERE nama_menu = ?", (qty, menu))
+      conn.commit()
+      conn.close()
+print("Versi SQLite Anda:", sqlite3.sqlite_version)
 

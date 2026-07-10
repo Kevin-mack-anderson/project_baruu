@@ -1,3 +1,38 @@
+// --- FUNGSI PENGURANG STOK JS ANTI-CRASH ---
+function kurangiStokLokal(keranjang) {
+    try {
+        let dataStokLokal = JSON.parse(localStorage.getItem('dataStokHarian')) || {};
+        let adaYangHabis = false;
+        let payloadPython = {};
+
+        // Kurangi sisa porsi sesuai pesanan
+        for (const [namaMenu, item] of Object.entries(keranjang)) {
+            if (dataStokLokal[namaMenu]) {
+                dataStokLokal[namaMenu].sisa -= item.qty;
+                if (dataStokLokal[namaMenu].sisa <= 0) {
+                    dataStokLokal[namaMenu].sisa = 0;
+                    adaYangHabis = true; 
+                }
+            }
+        }
+        localStorage.setItem('dataStokHarian', JSON.stringify(dataStokLokal));
+
+        if (adaYangHabis) {
+            for (const [m, d] of Object.entries(dataStokLokal)) {
+                payloadPython[m] = d.sisa > 0;
+            }
+            // Tembak API secara "diam-diam" (silent)
+            fetch('http://127.0.0.1:5000/api/stok', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payloadPython)
+            }).catch(e => console.log("Silent error update stok:", e));
+        }
+    } catch (error) {
+        console.error("Gagal mengurangi stok:", error);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
         // (PENGEMBANGAN)
         // Fitur untuk memindahkan otomatis halaman ketika kasir sudah mengkonfirmasi
@@ -121,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Var utk timer
         let countdownInterval;
-        let timeLeft = 120;
+        let timeLeft = 50;
 
         // Logika saat tombol konfirmasi ditekan
         btnKonfirmasi.addEventListener('click', () => {
@@ -147,8 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // cek kata tak pantas (Profanity Filter)
             const daftarKataKotor = [
-                "bodoh","bangsat","tolol","anjing","bajingan","bego","pea","puki","pukimai","telaso","asu","pantek","dongo",
-                "kontol", "peler","titit","tete","payudara","memek"
+                "kata kotor", "bodoh"
             ]
             const namaKecil = nama.toLowerCase();
             
@@ -281,6 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(data => {
                 if(data.status === "sukses") {
+                    kurangiStokLokal(cart);
                     alert("terimakasih! Pembayaran Qr Berhasil Masuk!")
                     // give kunci lunas
                     let riwayat = JSON.parse(localStorage.getItem('riwayatPesananKu')) || [];
