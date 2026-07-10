@@ -1,0 +1,15 @@
+{
+  "folders": [
+	{
+		"name": "static",
+		"path": "../../updated-main/updated-main/lesgo/static"
+	},
+	{
+		"name": "Project Pribadi",
+		"path": ".."
+	}
+],
+  "settings": {
+    "liveServer.settings.multiRootWorkspaceName": "Project Pribadi"
+  }
+}

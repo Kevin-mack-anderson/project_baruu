@@ -5,20 +5,30 @@ stokGlobal = {};
 
 // Fungsi tambah ke keranjang (saat kartu di klik)
 function add(nama, harga) {
-  // cek stok
- if (stokGlobal[nama] === false) {
-  alert(`Maaf, menu ${nama} sedang habis!`);
-  return;
- }
+ // Cek stok langsung dari data server Python
+  if (stokGlobal[nama]) {
+      const sisa = stokGlobal[nama].sisa;
+      const qtyDiKeranjang = cart[nama] ? cart[nama].qty : 0;
+      
+      if (sisa <= 0) {
+          alert(`Maaf, ${nama} sudah habis hari ini!`);
+          return;
+      }
+      if (qtyDiKeranjang + 1 > sisa) {
+          alert(`Maaf, sisa ${nama} tinggal ${sisa} porsi lagi!`);
+          return;
+      }
+  }
+
+  // Jika aman, masukkan ke keranjang
   if (cart[nama]) {
-    cart[nama].qty +=1;
+    cart[nama].qty += 1;
   } else {
     cart[nama] = {harga: harga, qty: 1};
   }
   updateCartUI();
   checkForm();
 }
-
 // Render ulang tampilan tabel keranjang
 function updateCartUI() {
   const table = document.querySelector('table');
@@ -88,14 +98,33 @@ function updateCartUI() {
 }
 
 // Mengubah kuantitas item di keranjang
+// Mengubah kuantitas item di keranjang
 function changeQty(nama, delta) {
   if (cart[nama]) {
+    
+    // VALIDASI: Hanya cek jika pelanggan menekan tombol "+" (delta > 0)
+    if (delta > 0) {
+        let dataStokLokal = JSON.parse(localStorage.getItem('dataStokHarian')) || {};
+        if (dataStokLokal[nama]) {
+            const sisaStok = dataStokLokal[nama].sisa;
+            const qtyDiKeranjang = cart[nama].qty;
+            
+            // Cegah penambahan jika melebihi stok
+            if (qtyDiKeranjang + delta > sisaStok) {
+                alert(`Maaf, porsi ${nama} hanya tersisa ${sisaStok} lagi!`);
+                return; // Batalkan proses penambahan
+            }
+        }
+    }
+
+    // Eksekusi penambahan / pengurangan
     cart[nama].qty += delta;
 
-    // Hapus properti if qty =0 or <
+    // Hapus properti jika qty = 0 atau kurang
     if (cart[nama].qty <= 0) {
       delete cart[nama];
     }
+    
     updateCartUI();
     checkForm();
   }
@@ -180,10 +209,10 @@ document.addEventListener('DOMContentLoaded', () => {
                   const namaMenu = elemenNama.textContent;
                   
                   // Jika di database statusnya Habis (false)
-                  if (stokGlobal[namaMenu] === false) {
+               // Jika di database status sisa stoknya 0 (Habis)
+                  if (stokGlobal[namaMenu] && stokGlobal[namaMenu].sisa <= 0) {
                       kartu.style.filter = 'grayscale(100%)';
                       kartu.style.opacity = '0.5';
-                      kartu.style.pointerEvents = 'none';
 
                       const spanHarga = kartu.querySelector('.menu-info span');
                       if (spanHarga) {
